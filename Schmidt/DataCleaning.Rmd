@@ -1,0 +1,49 @@
+---
+title: "320 Final Project"
+author: "Belle Schmidt and Rachael Olson"
+date: "2025-11-12"
+output: html_document
+---
+
+```{r}
+library(readr)
+nfl_team_stats_2002_2024 <- read_csv("C:\\Users\\isabe\\OneDrive\\Big Data Bowl\\TeamRanking\\nfl_team_stats_2002-2024.csv")
+#View(nfl_team_stats_2002_2024)
+```
+
+```{r}
+Season24 <- nfl_team_stats_2002_2024 %>% 
+  filter(season == 2024)
+
+Season24 <- Season24 %>% 
+  mutate(away_win_margin = score_away - score_home,
+         home_win_margin = score_home - score_away) 
+
+Thru_Week_6 <- Season24 %>% 
+  filter(week < 6) %>% 
+  dplyr::select(-season, -week, -date, -time_et)
+
+Thru_Week_6
+
+Away_Stats <- Thru_Week_6 %>% 
+  group_by(away) %>% 
+  summarise(points_allowed_away = sum(score_home),
+            yards_allowed_away = sum(yards_home),
+            sacks_away = sum(sacks_num_away),
+            turnovers_away = sum(fumbles_away) + sum(interceptions_away),
+            num_away_games = n())
+
+Home_Stats <- Thru_Week_6 %>% 
+  group_by(home) %>% 
+  summarise(points_allowed_home = sum(score_away),
+            yards_allowed_home = sum(yards_away),
+            sacks_home = sum(sacks_num_home),
+            turnovers_home = sum(fumbles_home) + sum(interceptions_home),
+            num_home_games = n())
+
+
+ThruWeek6Totals <- full_join(Away_Stats, Home_Stats, join_by(away == home))
+
+Season24 %>% 
+  dplyr::select(-season, -date, -time_et, -first_downs_away, -first_downs_home, -first_downs_from_passing_away, -first_downs_from_passing_home, -first_downs_from_rushing_away, -first_downs_from_rushing_home, -first_downs_from_penalty_away, -first_downs_from_penalty_home, -third_down_comp_away, -third_down_comp_home, -third_down_att_away, -third_down_att_home, -fourth_down_att_away, -fourth_down_att_home, -fourth_down_comp_away, -fourth_down_comp_home, -plays_away, -plays_home, -drives_away, -drives_home, -pass_comp_away, -pass_comp_home)
+```
