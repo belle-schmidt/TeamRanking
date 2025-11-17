@@ -1,6 +1,6 @@
 ---
 title: "320 Final Project"
-author: "Belle Schmidt"
+author: "Belle Schmidt and Rachael Olson"
 date: "2025-11-12"
 output: html_document
 ---
