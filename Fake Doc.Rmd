@@ -1,5 +1,0 @@
----
-title: "Fake Doc"
-output: html_document
----
-
