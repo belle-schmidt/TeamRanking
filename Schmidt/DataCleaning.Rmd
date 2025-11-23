@@ -7,8 +7,10 @@ output: html_document
 
 ```{r}
 library(readr)
-nfl_team_stats_2002_2024 <- read_csv("C:\\Users\\isabe\\OneDrive\\Big Data Bowl\\TeamRanking\\nfl_team_stats_2002-2024.csv")
+nfl_team_stats_2002_2024 <- read_csv("C:\\Users\\isabe\\OneDrive\\Big Data Bowl\\TeamRanking\\Schmidt\\nfl_team_stats_2002-2024.csv")
 #View(nfl_team_stats_2002_2024)
+
+nfl_team_stats_2002_2024
 ```
 
 ```{r}
