@@ -7,10 +7,11 @@ output: html_document
 
 ```{r}
 library(readr)
+library(dplyr)
 nfl_team_stats_2002_2024 <- read_csv("C:\\Users\\isabe\\OneDrive\\Big Data Bowl\\TeamRanking\\Schmidt\\nfl_team_stats_2002-2024.csv")
 #View(nfl_team_stats_2002_2024)
 
-nfl_team_stats_2002_2024
+# nfl_team_stats_2002_2024
 ```
 
 ```{r}
@@ -48,4 +49,102 @@ ThruWeek6Totals <- full_join(Away_Stats, Home_Stats, join_by(away == home))
 
 Season24 %>% 
   dplyr::select(-season, -date, -time_et, -first_downs_away, -first_downs_home, -first_downs_from_passing_away, -first_downs_from_passing_home, -first_downs_from_rushing_away, -first_downs_from_rushing_home, -first_downs_from_penalty_away, -first_downs_from_penalty_home, -third_down_comp_away, -third_down_comp_home, -third_down_att_away, -third_down_att_home, -fourth_down_att_away, -fourth_down_att_home, -fourth_down_comp_away, -fourth_down_comp_home, -plays_away, -plays_home, -drives_away, -drives_home, -pass_comp_away, -pass_comp_home)
+
+View(Season24)
+```
+
+# Math 
+
+T1 = Bills
+T2 = Dolphins
+T3 = Patriots
+T4 = Jets
+T5 = Ravens
+T6 = Bengals
+T7 = Browns
+T8 = Steelers
+T9 = Texans
+T10 = Colts 
+T11 = Jaguars
+T12 = Titans
+T13 = Broncos
+T14 = Chiefs 
+T15 = Raiders
+T16 = Chargers
+T17 = Cowboys
+T18 = Giants
+T19 = Eagles
+T20 = Commanders
+T21 = Bears
+T22 = Lions
+T23 = Packers
+T24 = Vikings
+T25 = Falcons
+T26 = Panthers
+T27 = Saints
+T28 = Bucaneers
+T29 = Cardinals
+T30 = Rams
+T31 = 49ers
+T32 = Seahawks
+
+```{r}
+Least_Squares_data <- Season24 |> 
+  select(week, home, away, home_win_margin) |> 
+  mutate(home = ifelse(home == "Bills", "T1", ifelse(home == "Dolphins", "T2", ifelse(home == "Patriots", "T3", ifelse(home == "Jets", "T4", ifelse(home == "Ravens", "T5", ifelse(home == "Bengals", "T6", ifelse(home == "Browns", "T7", ifelse(home == "Steelers", "T8", ifelse(home == "Texans", "T9", ifelse(home == "Texans", "T9", ifelse(home == "Colts", "T10", ifelse(home == "Jaguars", "T11", ifelse(home == "Titans", "T12", ifelse(home == "Broncos", "T13", ifelse(home == "Chiefs", "T14", ifelse(home == "Raiders", "T15", ifelse(home == "Chargers", "T16", ifelse(home == "Cowboys", "T17", ifelse(home == "Giants", "T18", ifelse(home == "Eagles", "T19", ifelse(home == "Commanders", "T20", ifelse(home == "Bears", "T21", ifelse(home == "Lions", "T22", ifelse(home == "Packers", "T23", ifelse(home == "Vikings", "T24", ifelse(home == "Falcons", "T25", ifelse(home == "Panthers", "T26", ifelse(home == "Saints", "T27", ifelse(home == "Bucaneers", "T28", ifelse(home == "Cardinals", "T29", ifelse(home == "Rams", "T30", ifelse(home == "49ers", "T31", "T32"))))))))))))))))))))))))))))))))) |> 
+  mutate(away = ifelse(away == "Bills", "T1", ifelse(away == "Dolphins", "T2", ifelse(away == "Patriots", "T3", ifelse(away == "Jets", "T4", ifelse(away == "Ravens", "T5", ifelse(away == "Bengals", "T6", ifelse(away == "Browns", "T7", ifelse(away == "Steelers", "T8", ifelse(away == "Texans", "T9", ifelse(away == "Texans", "T9", ifelse(away == "Colts", "T10", ifelse(away == "Jaguars", "T11", ifelse(away == "Titans", "T12", ifelse(away == "Broncos", "T13", ifelse(away == "Chiefs", "T14", ifelse(away == "Raiders", "T15", ifelse(away == "Chargers", "T16", ifelse(away == "Cowboys", "T17", ifelse(away == "Giants", "T18", ifelse(away == "Eagles", "T19", ifelse(away == "Commanders", "T20", ifelse(away == "Bears", "T21", ifelse(away == "Lions", "T22", ifelse(away == "Packers", "T23", ifelse(away == "Vikings", "T24", ifelse(away == "Falcons", "T25", ifelse(away == "Panthers", "T26", ifelse(away == "Saints", "T27", ifelse(away == "Bucaneers", "T28", ifelse(away == "Cardinals", "T29", ifelse(away == "Rams", "T30", ifelse(away == "49ers", "T31", "T32")))))))))))))))))))))))))))))))))
+```
+
+# Least Squares Through Week 9
+
+```{r}
+Week_9_Least_Squares <-Least_Squares_data |> 
+  mutate(week = as.numeric(week)) |> 
+  filter(week < 10)
+
+
+Week_9_Least_Squares
+
+Solutions <- as.matrix(Week_9_Least_Squares[, "home_win_margin"])
+
+x <- as.matrix(paste0("T", 1:32))
+
+zeros <- matrix(0, ncol = 32, nrow = 138)
+
+modify_matrix <- function(input_matrix, data) {
+  for (i in 1:nrow(data)){
+    col <- data$home[i]
+    col_index <- as.numeric(sub("T","", Week_9_Least_Squares$home[i]))
+    input_matrix[i, col_index] <- 1
+    col2 <- Week_9_Least_Squares$away[i]
+    col_index2 <- as.numeric(sub("T","", Week_9_Least_Squares$away[i]))
+    input_matrix[i, col_index2] <- -1
+    
+  
+  }
+  
+  return(input_matrix)
+}
+
+T1 <- modify_matrix(zeros, Week_9_Least_Squares)
+
+NewT <- t(T1)%*%T1
+
+NewSolution <- t(T1)%*%Solutions
+```
+
+# Least Squares Through Week 18
+
+```{r}
+Solutions2 <- as.matrix(Least_Squares_data[, "home_win_margin"])
+
+x2 <- as.matrix(paste0("T", 1:32))
+
+zeros2 <- matrix(0, ncol = 32, nrow = 285)
+
+T2 <- modify_matrix(zeros2, Least_Squares_data)
+
+NewT2 <- t(T2)%*%T2
+
+NewSolution2 <- t(T2)%*%Solutions2
 ```
