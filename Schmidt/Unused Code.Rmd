@@ -1,0 +1,51 @@
+---
+title: "Unused Code"
+output: html_document
+---
+
+```{r}
+
+NewT <- t(T1)%*%T1
+
+NewSolution <- t(T1)%*%Solutions
+
+
+# Fixing The Linear Dependence Issue:
+
+modify_matrix2 <- function(input_matrix, row) {
+  for (i in 1:ncol(input_matrix)){
+    input_matrix[row, i] <- 1
+    
+}
+  
+  return(input_matrix)
+    
+}
+
+LinearDependence <- modify_matrix2(NewT, 32)
+
+LinearDependence <- modify_matrix2(LinearDependence, 4)
+
+LinearDependence <- modify_matrix2(LinearDependence, 5)
+
+LinearDependence <- modify_matrix2(LinearDependence, 10)
+
+LinearDependence <- modify_matrix2(LinearDependence, 16)
+
+LinearDependence <- modify_matrix2(LinearDependence, 19)
+
+View(LinearDependence)
+
+
+NewSolution[32,1] <- 0
+NewSolution[4, 1] <- 0 
+NewSolution[5, 1] <- 0
+NewSolution[10,1] <- 0
+NewSolution[16,1] <- 0
+NewSolution[19,1] <- 0
+
+
+solve(LinearDependence)
+
+```
+

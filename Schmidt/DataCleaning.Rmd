@@ -111,97 +111,6 @@ Least_Squares_data <- Season24 |>
   mutate(away = ifelse(away == "Bills", "T1", ifelse(away == "Dolphins", "T2", ifelse(away == "Patriots", "T3", ifelse(away == "Jets", "T4", ifelse(away == "Ravens", "T5", ifelse(away == "Bengals", "T6", ifelse(away == "Browns", "T7", ifelse(away == "Steelers", "T8", ifelse(away == "Texans", "T9", ifelse(away == "Texans", "T9", ifelse(away == "Colts", "T10", ifelse(away == "Jaguars", "T11", ifelse(away == "Titans", "T12", ifelse(away == "Broncos", "T13", ifelse(away == "Chiefs", "T14", ifelse(away == "Raiders", "T15", ifelse(away == "Chargers", "T16", ifelse(away == "Cowboys", "T17", ifelse(away == "Giants", "T18", ifelse(away == "Eagles", "T19", ifelse(away == "Commanders", "T20", ifelse(away == "Bears", "T21", ifelse(away == "Lions", "T22", ifelse(away == "Packers", "T23", ifelse(away == "Vikings", "T24", ifelse(away == "Falcons", "T25", ifelse(away == "Panthers", "T26", ifelse(away == "Saints", "T27", ifelse(away == "Buccaneers", "T28", ifelse(away == "Cardinals", "T29", ifelse(away == "Rams", "T30", ifelse(away == "49ers", "T31", "T32")))))))))))))))))))))))))))))))))
 ```
 
-# Least Squares Through Week 9
-
-## Data 
-
-```{r}
-Week_9_Least_Squares <-Least_Squares_data |> 
-  mutate(week = as.numeric(week)) |> 
-  filter(week < 10)
-
-AFC_East_Week9 <- Week_9_Least_Squares |> 
-  filter(home %in% c("T1", "T2", "T3", "T4") & away %in% c("T1", "T2", "T3", "T4"))
-
-AFC_North_Week9 <- Week_9_Least_Squares |> 
-  filter(home %in% c("T5", "T6", "T7", "T8") & away %in% c("T5", "T6", "T7", "T8")) |> 
-  mutate(home = ifelse(home == "T5", "T1", ifelse(home == "T6", "T2", ifelse(home == "T7", "T3", "T4"))),
-         away = ifelse(away == "T5", "T1", ifelse(away == "T6", "T2", ifelse(away == "T7", "T3", "T4"))))
-
-AFC_South_Week9 <- Week_9_Least_Squares |> 
-  filter(home %in% c("T9", "T10", "T11", "T12") & away %in% c("T9", "T10", "T11", "T12")) |> 
-  mutate(home = ifelse(home == "T9", "T1", ifelse(home == "T10", "T2", ifelse(home == "T11", "T3", "T4"))),
-         away = ifelse(away == "T9", "T1", ifelse(away == "T10", "T2", ifelse(away == "T11", "T3", "T4"))))
-
-AFC_West_Week9 <- Week_9_Least_Squares |> 
-  filter(home %in% c("T13", "T14", "T15", "T16") & away %in% c("T13", "T14", "T15", "T16")) |> 
-  mutate(home = ifelse(home == "T13", "T1", ifelse(home == "T14", "T2", ifelse(home == "T15", "T3", "T4"))),
-         away = ifelse(away == "T13", "T1", ifelse(away == "T14", "T2", ifelse(away == "T15", "T3", "T4"))))
-
-NFC_East_Week9 <- Week_9_Least_Squares |> 
-  filter(home %in% c("T17", "T18", "T19", "T20") & away %in% c("T17", "T18", "T19", "T20")) |> 
-  mutate(home = ifelse(home == "T17", "T1", ifelse(home == "T18", "T2", ifelse(home == "T19", "T3", "T4"))),
-         away = ifelse(away == "T17", "T1", ifelse(away == "T18", "T2", ifelse(away == "T19", "T3", "T4"))))
-
-NFC_North_Week9 <- Week_9_Least_Squares |> 
-  filter(home %in% c("T21", "T22", "T23", "T24") & away %in% c("T21", "T22", "T23", "T24")) |> 
-  mutate(home = ifelse(home == "T21", "T1", ifelse(home == "T22", "T2", ifelse(home == "T23", "T3", "T4"))),
-         away = ifelse(away == "T5", "T1", ifelse(away == "T6", "T2", ifelse(away == "T7", "T3", "T4"))))
-
-NFC_South_Week9 <- Week_9_Least_Squares |> 
-  filter(home %in% c("T25", "T26", "T27", "T28") & away %in% c("T25", "T26", "T27", "T28")) |> 
-  mutate(home = ifelse(home == "T25", "T1", ifelse(home == "T26", "T2", ifelse(home == "T27", "T3", "T4"))),
-         away = ifelse(away == "T25", "T1", ifelse(away == "T26", "T2", ifelse(away == "T27", "T3", "T4"))))
-
-NFC_West_Week9 <- Week_9_Least_Squares |> 
-  filter(home %in% c("T29", "T30", "T31", "T32") & away %in% c("T29", "T30", "T31", "T32")) |> 
-  mutate(home = ifelse(home == "T29", "T1", ifelse(home == "T30", "T2", ifelse(home == "T31", "T3", "T4"))),
-         away = ifelse(away == "T29", "T1", ifelse(away == "T30", "T2", ifelse(away == "T31", "T3", "T4"))))
-```
-
-```{r}
-Least_Squares_data <- Least_Squares_data |> 
-  filter(week %in% c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18))
-
-AFC_East <- Least_Squares_data|> 
-  filter(home %in% c("T1", "T2", "T3", "T4") & away %in% c("T1", "T2", "T3", "T4"))
-
-AFC_North <- Least_Squares_data|> 
-  filter(home %in% c("T5", "T6", "T7", "T8") & away %in% c("T5", "T6", "T7", "T8")) |> 
-  mutate(home = ifelse(home == "T5", "T1", ifelse(home == "T6", "T2", ifelse(home == "T7", "T3", "T4"))),
-         away = ifelse(away == "T5", "T1", ifelse(away == "T6", "T2", ifelse(away == "T7", "T3", "T4"))))
-
-AFC_South <- Least_Squares_data|> 
-  filter(home %in% c("T9", "T10", "T11", "T12") & away %in% c("T9", "T10", "T11", "T12")) |> 
-  mutate(home = ifelse(home == "T9", "T1", ifelse(home == "T10", "T2", ifelse(home == "T11", "T3", "T4"))),
-         away = ifelse(away == "T9", "T1", ifelse(away == "T10", "T2", ifelse(away == "T11", "T3", "T4"))))
-
-AFC_West <- Least_Squares_data|> 
-  filter(home %in% c("T13", "T14", "T15", "T16") & away %in% c("T13", "T14", "T15", "T16")) |> 
-  mutate(home = ifelse(home == "T13", "T1", ifelse(home == "T14", "T2", ifelse(home == "T15", "T3", "T4"))),
-         away = ifelse(away == "T13", "T1", ifelse(away == "T14", "T2", ifelse(away == "T15", "T3", "T4"))))
-
-NFC_East <- Least_Squares_data|> 
-  filter(home %in% c("T17", "T18", "T19", "T20") & away %in% c("T17", "T18", "T19", "T20")) |> 
-  mutate(home = ifelse(home == "T17", "T1", ifelse(home == "T18", "T2", ifelse(home == "T19", "T3", "T4"))),
-         away = ifelse(away == "T17", "T1", ifelse(away == "T18", "T2", ifelse(away == "T19", "T3", "T4"))))
-
-NFC_North <- Least_Squares_data|> 
-  filter(home %in% c("T21", "T22", "T23", "T24") & away %in% c("T21", "T22", "T23", "T24")) |> 
-  mutate(home = ifelse(home == "T21", "T1", ifelse(home == "T22", "T2", ifelse(home == "T23", "T3", "T4"))),
-         away = ifelse(away == "T5", "T1", ifelse(away == "T6", "T2", ifelse(away == "T7", "T3", "T4"))))
-
-NFC_South <- Least_Squares_data|> 
-  filter(home %in% c("T25", "T26", "T27", "T28") & away %in% c("T25", "T26", "T27", "T28")) |> 
-  mutate(home = ifelse(home == "T25", "T1", ifelse(home == "T26", "T2", ifelse(home == "T27", "T3", "T4"))),
-         away = ifelse(away == "T25", "T1", ifelse(away == "T26", "T2", ifelse(away == "T27", "T3", "T4"))))
-
-NFC_West <- Least_Squares_data|> 
-  filter(home %in% c("T29", "T30", "T31", "T32") & away %in% c("T29", "T30", "T31", "T32")) |> 
-  mutate(home = ifelse(home == "T29", "T1", ifelse(home == "T30", "T2", ifelse(home == "T31", "T3", "T4"))),
-         away = ifelse(away == "T29", "T1", ifelse(away == "T30", "T2", ifelse(away == "T31", "T3", "T4"))))
-```
-
 ## Massey's Method General: Least Squares
 
 ```{r}
@@ -233,415 +142,48 @@ modify_matrix2 <- function(input_matrix, row) {
 }
 ```
 
-## AFC 
 
-### AFC East
+
+# Least Squares Through Week 9
 
 ```{r}
-Solutions_AFC_East <- as.matrix(AFC_East_Week9[, "home_win_margin"])
+Solutions_week9 <- as.matrix(Week_9_Least_Squares[, "home_win_margin"])
 
-# Base Matrix
-zeros_AFC_East <- matrix(0, ncol = 4, nrow = 6)
+zeros_week9 <- matrix(0, ncol = 32, nrow = 138)
 
-AFC_East_T1 <- modify_matrix(zeros_AFC_East, AFC_East_Week9)
+T_week9 <- modify_matrix(zeros_week9, Week_9_Least_Squares)
 
-New_AFC_East_T1 <- t(AFC_East_T1)%*%AFC_East_T1
+NewT_week9 <- t(T_week9)%*%T_week9
 
-NewSolution_AFC_North <- t(AFC_East_T1)%*%Solutions_AFC_East
+NewSolution_week9 <- t(T_week9)%*%Solutions_week9
 
-LinearDependent_AFC_East <- modify_matrix2(New_AFC_East_T1, 4) 
+LinearIndependence_week9 <- modify_matrix2(NewT_week9, 32)
 
+NewSolution_week9[32, 1] <- 0
 
-Ranking_AFC_East <- solve(LinearDependent_AFC_East) %*% NewSolution_AFC_North
+NFL_Rankings_Week9 <- solve(LinearIndependence_week9) %*% NewSolution_week9
 
-Ranking_AFC_East
+NFL_Rankings_Week9
 ```
 
-### AFC North
+# Least Squares Ranking Week 18
 
 ```{r}
-# Solutions_AFC_North <- as.matrix(AFC_North_Week9[, "home_win_margin"])
-# 
-# zeros_AFC_North <- matrix(0, ncol = 4, nrow = 3)
-#
-# AFC_North_T1 <- modify_matrix(zeros_AFC_North, AFC_North_Week9)
-# 
-# New_AFC_North_T1 <- t(AFC_North_T1)%*%AFC_North_T1
-# 
-# NewSolution_AFC_North <- t(AFC_North_T1)%*%Solutions_AFC_North
-# 
-# LinearDependent_AFC_North <- modify_matrix2(New_AFC_North_T1, 4) 
-# 
-# 
-# Ranking_AFC_North <- solve(LinearDependent_AFC_North) %*% NewSolution_AFC_North
-# 
-# Ranking_AFC_North
-```
+Solutions_week18 <- as.matrix(Least_Squares_data[, "home_win_margin"])
 
-### AFC South
+zeros_week18 <- matrix(0, ncol = 32, nrow = 272)
 
-```{r}
-Solutions_AFC_South <- as.matrix(AFC_South_Week9[, "home_win_margin"])
+T_week18 <- modify_matrix(zeros_week18, Least_Squares_data)
 
-zeros_AFC_South <- matrix(0, ncol = 4, nrow = 5)
+NewT_week18 <- t(T_week18)%*%T_week18
 
-AFC_South_T1 <- modify_matrix(zeros_AFC_South, AFC_South_Week9)
+NewSolution_week18 <- t(T_week18)%*%Solutions_week18
 
-New_AFC_South_T1 <- t(AFC_South_T1)%*%AFC_South_T1
+LinearIndependence_week18 <- modify_matrix2(NewT_week18, 32)
 
-NewSolution_AFC_South <- t(AFC_South_T1)%*%Solutions_AFC_South
+NewSolution_week18[32, 1] <- 0
 
-LinearDependent_AFC_South <- modify_matrix2(New_AFC_South_T1, 4)
+NFL_Rankings_Week18 <- solve(LinearIndependence_week18) %*% NewSolution_week18
 
-
-Ranking_AFC_South <- solve(LinearDependent_AFC_South) %*% NewSolution_AFC_South
-
-Ranking_AFC_South
-```
-
-### AFC West 
-
-```{r}
-Solutions_AFC_West <- as.matrix(AFC_West_Week9[, "home_win_margin"])
-
-zeros_AFC_West <- matrix(0, ncol = 4, nrow = 5)
-
-AFC_West_T1 <- modify_matrix(zeros_AFC_West, AFC_West_Week9)
-
-New_AFC_West_T1 <- t(AFC_West_T1)%*%AFC_West_T1
-
-NewSolution_AFC_West <- t(AFC_West_T1)%*%Solutions_AFC_West
-
-LinearDependent_AFC_West <- modify_matrix2(New_AFC_West_T1, 4)
-
-
-Ranking_AFC_West <- solve(LinearDependent_AFC_West) %*% NewSolution_AFC_West
-
-Ranking_AFC_West
-```
-
-### NFC East
-
-```{r}
-Solutions_NFC_East <- as.matrix(NFC_East_Week9[, "home_win_margin"])
-
-# Base Matrix
-zeros_NFC_East <- matrix(0, ncol = 4, nrow = 4)
-
-NFC_East_T1 <- modify_matrix(zeros_NFC_East, NFC_East_Week9)
-
-New_NFC_East_T1 <- t(NFC_East_T1)%*%NFC_East_T1
-
-NewSolution_NFC_North <- t(NFC_East_T1)%*%Solutions_NFC_East
-
-LinearDependent_NFC_East <- modify_matrix2(New_NFC_East_T1, 4) 
-
-
-Ranking_NFC_East <- solve(LinearDependent_NFC_East) %*% NewSolution_NFC_North
-
-Ranking_NFC_East
-```
-
-### NFC North
-
-```{r}
-# Solutions_NFC_North <- as.matrix(NFC_North_Week9[, "home_win_margin"])
-# 
-# zeros_NFC_North <- matrix(0, ncol = 4, nrow = 3)
-# 
-# NFC_North_T1 <- modify_matrix(zeros_NFC_North, NFC_North_Week9)
-# 
-# New_NFC_North_T1 <- t(NFC_North_T1)%*%NFC_North_T1
-# 
-# NewSolution_NFC_North <- t(NFC_North_T1)%*%Solutions_NFC_North
-# 
-# LinearDependent_NFC_North <- modify_matrix2(New_NFC_North_T1, 3)
-# 
-# 
-# Ranking_NFC_North <- solve(LinearDependent_NFC_North) %*% NewSolution_NFC_North
-# 
-# Ranking_NFC_North
-```
-
-### NFC South
-
-```{r}
-Solutions_NFC_South <- as.matrix(NFC_South_Week9[, "home_win_margin"])
-
-zeros_NFC_South <- matrix(0, ncol = 4, nrow = 7)
-
-NFC_South_T1 <- modify_matrix(zeros_NFC_South, NFC_South_Week9)
-
-New_NFC_South_T1 <- t(NFC_South_T1)%*%NFC_South_T1
-
-NewSolution_NFC_South <- t(NFC_South_T1)%*%Solutions_NFC_South
-
-LinearDependent_NFC_South <- modify_matrix2(New_NFC_South_T1, 4)
-
-
-Ranking_NFC_South <- solve(LinearDependent_NFC_South) %*% NewSolution_NFC_South
-
-Ranking_NFC_South
-```
-
-### NFC West
-
-```{r}
-Solutions_NFC_West <- as.matrix(NFC_West_Week9[, "home_win_margin"])
-
-zeros_NFC_West <- matrix(0, ncol = 4, nrow = 5)
-
-NFC_West_T1 <- modify_matrix(zeros_NFC_West, NFC_West_Week9)
-
-New_NFC_West_T1 <- t(NFC_West_T1)%*%NFC_West_T1
-
-NewSolution_NFC_West <- t(NFC_West_T1)%*%Solutions_NFC_West
-
-LinearDependent_NFC_West <- modify_matrix2(New_NFC_West_T1, 4)
-
-
-Ranking_NFC_West <- solve(LinearDependent_NFC_West) %*% NewSolution_NFC_West
-
-Ranking_NFC_West
-```
-
-### Attempt At Whole League 
-
-```{r}
-# Solutions <- as.matrix(Week_9_Least_Squares[, "home_win_margin"])
-# 
-# x <- as.matrix(paste0("T", 1:32))
-# 
-# zeros_whole_league <- matrix(0, ncol = 32, nrow = 138)
-# 
-# T_whole_league <- modify_matrix(zeros, Week_9_Least_Squares)
-# 
-# NewT_whole_league <- t(T1)%*%T1
-# 
-# NewSolution_whole_league <- t(T1)%*%Solutions
-# 
-# # Fixing The Linear Dependence Issue:
-# 
-# # Week_9_Least_Squares |> 
-# #  filter(home == "T29" | away == "T29")
-# 
-# # Team 32 Played - Team 30, Team 1, Team 25, Team 31, Team 18, Team 22, Team 2, Team 3, Team 13
-# 
-# # Team 4 Played - Team 31, Team 12, Team 3, Team 13, Team 24, Team 1, Team 8, Team 3, Team 9
-# 
-# # Team 5 - Team 14, Team 15, Team 17, Team 1, Team 6, Team 20, Team 28, Team 7, Team 13
-# 
-# # Team 10 - Team 9, Team 23, Team 21, team 8, Team 11, Team 12, Team 2, Team 9, Team 24
-# 
-# # Team 16 - Team 15, Team 26, Team 8, Team 14, Team 13, Team 29, Team 27, Team 7
-# 
-# # Team 19 - Team 23, Team 25, Team 27, Team 28, Team 7, Team 18, Team 6, Team 11
-# 
-# RowReducedT <- rref(NewT)
-# 
-# View(RowReducedT)
-# 
-# modify_matrix2 <- function(input_matrix, row) {
-#   for (i in 1:ncol(input_matrix)){
-#     input_matrix[row, i] <- 1
-#     
-# }
-#   
-#   return(input_matrix)
-#     
-# }
-# 
-# LinearDependence <- modify_matrix2(NewT, 32)
-# 
-# LinearDependence <- modify_matrix2(LinearDependence, 4)
-# 
-# LinearDependence <- modify_matrix2(LinearDependence, 5)
-# 
-# LinearDependence <- modify_matrix2(LinearDependence, 10)
-# 
-# LinearDependence <- modify_matrix2(LinearDependence, 16)
-# 
-# LinearDependence <- modify_matrix2(LinearDependence, 19)
-# 
-# View(LinearDependence)
-# 
-# 
-# 
-# solve(LinearDependence)
-# 
-# NewSolutionTest <- t(LinearDependence2)%*%Solutions
-```
-
-# Least Squares Through Week 18
-
-## AFC 
-
-### AFC East
-
-```{r}
-Solutions_AFC_East <- as.matrix(AFC_East[, "home_win_margin"])
-
-# Base Matrix
-zeros <- matrix(0, ncol = 4, nrow = 12)
-
-AFC_East_T1 <- modify_matrix(zeros, AFC_East)
-
-New_AFC_East_T1 <- t(AFC_East_T1)%*%AFC_East_T1
-
-NewSolution_AFC_North <- t(AFC_East_T1)%*%Solutions_AFC_East
-
-LinearDependent_AFC_East <- modify_matrix2(New_AFC_East_T1, 4) 
-
-
-Ranking_AFC_East <- solve(LinearDependent_AFC_East) %*% NewSolution_AFC_North
-
-Ranking_AFC_East
-```
-
-### AFC North
-
-```{r}
-Solutions_AFC_North <- as.matrix(AFC_North[, "home_win_margin"])
-
-AFC_North_T1 <- modify_matrix(zeros, AFC_North)
-
-New_AFC_North_T1 <- t(AFC_North_T1)%*%AFC_North_T1
-
-NewSolution_AFC_North <- t(AFC_North_T1)%*%Solutions_AFC_North
-
-LinearDependent_AFC_North <- modify_matrix2(New_AFC_North_T1, 4)
-
-
-Ranking_AFC_North <- solve(LinearDependent_AFC_North) %*% NewSolution_AFC_North
-
-Ranking_AFC_North
-```
-
-### AFC South
-
-```{r}
-Solutions_AFC_South <- as.matrix(AFC_South[, "home_win_margin"])
-
-AFC_South_T1 <- modify_matrix(zeros, AFC_South)
-
-New_AFC_South_T1 <- t(AFC_South_T1)%*%AFC_South_T1
-
-NewSolution_AFC_South <- t(AFC_South_T1)%*%Solutions_AFC_South
-
-LinearDependent_AFC_South <- modify_matrix2(New_AFC_South_T1, 4)
-
-
-Ranking_AFC_South <- solve(LinearDependent_AFC_South) %*% NewSolution_AFC_South
-
-Ranking_AFC_South
-```
-
-### AFC West 
-
-```{r}
-Solutions_AFC_West <- as.matrix(AFC_West[, "home_win_margin"])
-
-AFC_West_T1 <- modify_matrix(zeros, AFC_West)
-
-New_AFC_West_T1 <- t(AFC_West_T1)%*%AFC_West_T1
-
-NewSolution_AFC_West <- t(AFC_West_T1)%*%Solutions_AFC_West
-
-LinearDependent_AFC_West <- modify_matrix2(New_AFC_West_T1, 4)
-
-
-Ranking_AFC_West <- solve(LinearDependent_AFC_West) %*% NewSolution_AFC_West
-
-Ranking_AFC_West
-```
-
-### NFC East
-
-```{r}
-Solutions_NFC_East <- as.matrix(NFC_East[, "home_win_margin"])
-
-NFC_East_T1 <- modify_matrix(zeros, NFC_East)
-
-New_NFC_East_T1 <- t(NFC_East_T1)%*%NFC_East_T1
-
-NewSolution_NFC_North <- t(NFC_East_T1)%*%Solutions_NFC_East
-
-LinearDependent_NFC_East <- modify_matrix2(New_NFC_East_T1, 4) 
-
-
-Ranking_NFC_East <- solve(LinearDependent_NFC_East) %*% NewSolution_NFC_North
-
-Ranking_NFC_East
-```
-
-### NFC North
-
-```{r}
-Solutions_NFC_North <- as.matrix(NFC_North[, "home_win_margin"])
-
-NFC_North_T1 <- modify_matrix(zeros, NFC_North)
-
-New_NFC_North_T1 <- t(NFC_North_T1)%*%NFC_North_T1
-
-NewSolution_NFC_North <- t(NFC_North_T1)%*%Solutions_NFC_North
-
-LinearDependent_NFC_North <- modify_matrix2(New_NFC_North_T1, 3)
-
-
-Ranking_NFC_North <- solve(LinearDependent_NFC_North) %*% NewSolution_NFC_North
-
-Ranking_NFC_North
-```
-
-### NFC South
-
-```{r}
-Solutions_NFC_South <- as.matrix(NFC_South[, "home_win_margin"])
-
-NFC_South_T1 <- modify_matrix(zeros, NFC_South)
-
-New_NFC_South_T1 <- t(NFC_South_T1)%*%NFC_South_T1
-
-NewSolution_NFC_South <- t(NFC_South_T1)%*%Solutions_NFC_South
-
-LinearDependent_NFC_South <- modify_matrix2(New_NFC_South_T1, 4)
-
-
-Ranking_NFC_South <- solve(LinearDependent_NFC_South) %*% NewSolution_NFC_South
-
-Ranking_NFC_South
-```
-
-### NFC West
-
-```{r}
-Solutions_NFC_West <- as.matrix(NFC_West[, "home_win_margin"])
-
-NFC_West_T1 <- modify_matrix(zeros, NFC_West)
-
-New_NFC_West_T1 <- t(NFC_West_T1)%*%NFC_West_T1
-
-NewSolution_NFC_West <- t(NFC_West_T1)%*%Solutions_NFC_West
-
-LinearDependent_NFC_West <- modify_matrix2(New_NFC_West_T1, 4)
-
-
-Ranking_NFC_West <- solve(LinearDependent_NFC_West) %*% NewSolution_NFC_West
-
-Ranking_NFC_West
-```
-
-# Whole League 
-```{r}
-Solutions2 <- as.matrix(Least_Squares_data[, "home_win_margin"])
-
-x2 <- as.matrix(paste0("T", 1:32))
-
-zeros2 <- matrix(0, ncol = 32, nrow = 285)
-
-T2 <- modify_matrix(zeros2, Least_Squares_data)
-
-NewT2 <- t(T2)%*%T2
-
-NewSolution2 <- t(T2)%*%Solutions2
+NFL_Rankings_Week18
 ```
