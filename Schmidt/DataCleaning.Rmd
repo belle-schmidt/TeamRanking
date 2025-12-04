@@ -191,13 +191,15 @@ NFL_Rankings_Week18
 # Keener's Method 
 
 ```{r}
+
+Least_Squares_data
 Least_Squares_For_Keener <- Least_Squares_data |> 
   mutate(home = as.numeric(sub("T","", home)),
          away = as.numeric(sub("T","", away)))
 
 A_matrix <- function(input_data) {
   zeros <- matrix(0, ncol = 32, nrow = 32)
-  for (i in 1:(nrow(input_data) - 1)){
+  for (i in 1:(nrow(input_data))){
     if ((input_data$home[i] %in% 1:4 && input_data$away[i] %in% 1:4) |
         (input_data$home[i] %in% 5:8 && input_data$away[i] %in% 5:8) |
         (input_data$home[i] %in% 9:12 && input_data$away[i] %in% 9:12) |
@@ -206,17 +208,30 @@ A_matrix <- function(input_data) {
         (input_data$home[i] %in% 21:24 && input_data$away[i] %in% 21:24) |
         (input_data$home[i] %in% 25:28 && input_data$away[i] %in% 25:28) |
         (input_data$home[i] %in% 29:32 && input_data$away[i] %in% 29:32)){
-       for (j in (i + 1):nrow(input_data)){
+       for (j in 1:nrow(input_data)){
          if (input_data$home[i] == input_data$away[j] && input_data$away[i] == input_data$home[j]){
            row_index <- input_data$home[i]
-           col_index <- input_data$away[j]
+           print("The two team's are in the same division. The home team in the first game is", row_index)
+           col_index <- input_data$away[i]
+           print("The away team is", col_index)
            zeros[row_index, col_index] <- (input_data$score_home[i] + input_data$score_away[j] + 1) / (input_data$score_home[i] + input_data$score_away[i] + input_data$score_home[j] + input_data$score_away[j] + 2)
+           print(message("The aij is", zeros[row_index, col_index] ))
+           
+           zeros[col_index, row_index] <- (input_data$score_away[i] + input_data$score_home[j] + 1) / (input_data$score_home[i] + input_data$score_away[i] + input_data$score_home[j] + input_data$score_away[j] + 2)
+           print(message("The aji is", zeros[col_index, row_index]))
          }
        }
     }
+    else{
     row_index <- input_data$home[i]
     col_index <- input_data$away[i]
+    print("These teams are not in the same division. The home team was", row_index.)
+    print("The away team was", col_index)
     zeros[row_index,col_index] <- (input_data$score_home[i] + 1) / (input_data$score_home[i] + input_data$score_away[i] + 2)
+    print(message("The aij is", zeros[row_index,col_index]))
+       zeros[col_index,row_index] <- (input_data$score_away[i] + 1) / (input_data$score_home[i] + input_data$score_away[i] + 2)
+       print(message("The aij is", zeros[row_index,col_index], "The away team is", zeros[col_index,row_index]))
+  }
   }
   
   return(zeros)
