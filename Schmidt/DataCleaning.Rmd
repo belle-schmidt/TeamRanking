@@ -106,12 +106,12 @@ T32 = Seahawks
 
 ```{r}
 Least_Squares_data <- Season24 |> 
-  select(week, home, away, home_win_margin) |> 
+  select(week, home, away, home_win_margin, score_away, score_home) |> 
   mutate(home = ifelse(home == "Bills", "T1", ifelse(home == "Dolphins", "T2", ifelse(home == "Patriots", "T3", ifelse(home == "Jets", "T4", ifelse(home == "Ravens", "T5", ifelse(home == "Bengals", "T6", ifelse(home == "Browns", "T7", ifelse(home == "Steelers", "T8", ifelse(home == "Texans", "T9", ifelse(home == "Texans", "T9", ifelse(home == "Colts", "T10", ifelse(home == "Jaguars", "T11", ifelse(home == "Titans", "T12", ifelse(home == "Broncos", "T13", ifelse(home == "Chiefs", "T14", ifelse(home == "Raiders", "T15", ifelse(home == "Chargers", "T16", ifelse(home == "Cowboys", "T17", ifelse(home == "Giants", "T18", ifelse(home == "Eagles", "T19", ifelse(home == "Commanders", "T20", ifelse(home == "Bears", "T21", ifelse(home == "Lions", "T22", ifelse(home == "Packers", "T23", ifelse(home == "Vikings", "T24", ifelse(home == "Falcons", "T25", ifelse(home == "Panthers", "T26", ifelse(home == "Saints", "T27", ifelse(home == "Buccaneers", "T28", ifelse(home == "Cardinals", "T29", ifelse(home == "Rams", "T30", ifelse(home == "49ers", "T31", "T32"))))))))))))))))))))))))))))))))) |> 
   mutate(away = ifelse(away == "Bills", "T1", ifelse(away == "Dolphins", "T2", ifelse(away == "Patriots", "T3", ifelse(away == "Jets", "T4", ifelse(away == "Ravens", "T5", ifelse(away == "Bengals", "T6", ifelse(away == "Browns", "T7", ifelse(away == "Steelers", "T8", ifelse(away == "Texans", "T9", ifelse(away == "Texans", "T9", ifelse(away == "Colts", "T10", ifelse(away == "Jaguars", "T11", ifelse(away == "Titans", "T12", ifelse(away == "Broncos", "T13", ifelse(away == "Chiefs", "T14", ifelse(away == "Raiders", "T15", ifelse(away == "Chargers", "T16", ifelse(away == "Cowboys", "T17", ifelse(away == "Giants", "T18", ifelse(away == "Eagles", "T19", ifelse(away == "Commanders", "T20", ifelse(away == "Bears", "T21", ifelse(away == "Lions", "T22", ifelse(away == "Packers", "T23", ifelse(away == "Vikings", "T24", ifelse(away == "Falcons", "T25", ifelse(away == "Panthers", "T26", ifelse(away == "Saints", "T27", ifelse(away == "Buccaneers", "T28", ifelse(away == "Cardinals", "T29", ifelse(away == "Rams", "T30", ifelse(away == "49ers", "T31", "T32")))))))))))))))))))))))))))))))))
 ```
 
-## Massey's Method General: Least Squares
+# Massey's Method General: Least Squares
 
 ```{r}
 # Function That Makes Initial T Matrix
@@ -144,7 +144,7 @@ modify_matrix2 <- function(input_matrix, row) {
 
 
 
-# Least Squares Through Week 9
+## Least Squares Through Week 9
 
 ```{r}
 Solutions_week9 <- as.matrix(Week_9_Least_Squares[, "home_win_margin"])
@@ -166,7 +166,7 @@ NFL_Rankings_Week9 <- solve(LinearIndependence_week9) %*% NewSolution_week9
 NFL_Rankings_Week9
 ```
 
-# Least Squares Ranking Week 18
+## Least Squares Ranking Week 18
 
 ```{r}
 Solutions_week18 <- as.matrix(Least_Squares_data[, "home_win_margin"])
@@ -187,3 +187,46 @@ NFL_Rankings_Week18 <- solve(LinearIndependence_week18) %*% NewSolution_week18
 
 NFL_Rankings_Week18
 ```
+
+# Keener's Method 
+
+```{r}
+Least_Squares_For_Keener <- Least_Squares_data |> 
+  mutate(home = as.numeric(sub("T","", home)),
+         away = as.numeric(sub("T","", away)))
+
+A_matrix <- function(input_data) {
+  zeros <- matrix(0, ncol = 32, nrow = 32)
+  for (i in 1:(nrow(input_data) - 1)){
+    if ((input_data$home[i] %in% 1:4 && input_data$away[i] %in% 1:4) |
+        (input_data$home[i] %in% 5:8 && input_data$away[i] %in% 5:8) |
+        (input_data$home[i] %in% 9:12 && input_data$away[i] %in% 9:12) |
+        (input_data$home[i] %in% 13:16 && input_data$away[i] %in% 13:16) |
+        (input_data$home[i] %in% 17:20 && input_data$away[i] %in% 17:20) |
+        (input_data$home[i] %in% 21:24 && input_data$away[i] %in% 21:24) |
+        (input_data$home[i] %in% 25:28 && input_data$away[i] %in% 25:28) |
+        (input_data$home[i] %in% 29:32 && input_data$away[i] %in% 29:32)){
+       for (j in (i + 1):nrow(input_data)){
+         if (input_data$home[i] == input_data$away[j] && input_data$away[i] == input_data$home[j]){
+           row_index <- input_data$home[i]
+           col_index <- input_data$away[j]
+           zeros[row_index, col_index] <- (input_data$score_home[i] + input_data$score_away[j] + 1) / (input_data$score_home[i] + input_data$score_away[i] + input_data$score_home[j] + input_data$score_away[j] + 2)
+         }
+       }
+    }
+    row_index <- input_data$home[i]
+    col_index <- input_data$away[i]
+    zeros[row_index,col_index] <- (input_data$score_home[i] + 1) / (input_data$score_home[i] + input_data$score_away[i] + 2)
+  }
+  
+  return(zeros)
+    
+}
+
+Test <- A_matrix(Least_Squares_For_Keener)
+
+Least_Squares_For_Keener
+
+View(Test)
+```
+
