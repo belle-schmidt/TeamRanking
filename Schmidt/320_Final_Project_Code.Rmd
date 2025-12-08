@@ -16,40 +16,54 @@ nfl_team_stats_2002_2024 <- read_csv("C:\\Users\\isabe\\OneDrive\\Big Data Bowl\
 ```
 
 ```{r}
+nfl_team_stats_2002_2024 <- nfl_team_stats_2002_2024 %>% 
+  mutate(away_win_margin = score_away - score_home,
+         home_win_margin = score_home - score_away) |> 
+  select(season, week, home, away, home_win_margin, score_away, score_home) |> 
+  mutate(home = ifelse(home == "Bills", "T1", ifelse(home == "Dolphins", "T2", ifelse(home == "Patriots", "T3", ifelse(home == "Jets", "T4", ifelse(home == "Ravens", "T5", ifelse(home == "Bengals", "T6", ifelse(home == "Browns", "T7", ifelse(home == "Steelers", "T8", ifelse(home == "Texans", "T9", ifelse(home == "Texans", "T9", ifelse(home == "Colts", "T10", ifelse(home == "Jaguars", "T11", ifelse(home == "Titans", "T12", ifelse(home == "Broncos", "T13", ifelse(home == "Chiefs", "T14", ifelse(home == "Raiders", "T15", ifelse(home == "Chargers", "T16", ifelse(home == "Cowboys", "T17", ifelse(home == "Giants", "T18", ifelse(home == "Eagles", "T19", ifelse(home == "Commanders", "T20", ifelse(home == "Bears", "T21", ifelse(home == "Lions", "T22", ifelse(home == "Packers", "T23", ifelse(home == "Vikings", "T24", ifelse(home == "Falcons", "T25", ifelse(home == "Panthers", "T26", ifelse(home == "Saints", "T27", ifelse(home == "Buccaneers", "T28", ifelse(home == "Cardinals", "T29", ifelse(home == "Rams", "T30", ifelse(home == "49ers", "T31", "T32"))))))))))))))))))))))))))))))))) |> 
+  mutate(away = ifelse(away == "Bills", "T1", ifelse(away == "Dolphins", "T2", ifelse(away == "Patriots", "T3", ifelse(away == "Jets", "T4", ifelse(away == "Ravens", "T5", ifelse(away == "Bengals", "T6", ifelse(away == "Browns", "T7", ifelse(away == "Steelers", "T8", ifelse(away == "Texans", "T9", ifelse(away == "Texans", "T9", ifelse(away == "Colts", "T10", ifelse(away == "Jaguars", "T11", ifelse(away == "Titans", "T12", ifelse(away == "Broncos", "T13", ifelse(away == "Chiefs", "T14", ifelse(away == "Raiders", "T15", ifelse(away == "Chargers", "T16", ifelse(away == "Cowboys", "T17", ifelse(away == "Giants", "T18", ifelse(away == "Eagles", "T19", ifelse(away == "Commanders", "T20", ifelse(away == "Bears", "T21", ifelse(away == "Lions", "T22", ifelse(away == "Packers", "T23", ifelse(away == "Vikings", "T24", ifelse(away == "Falcons", "T25", ifelse(away == "Panthers", "T26", ifelse(away == "Saints", "T27", ifelse(away == "Buccaneers", "T28", ifelse(away == "Cardinals", "T29", ifelse(away == "Rams", "T30", ifelse(away == "49ers", "T31", "T32"))))))))))))))))))))))))))))))))) |> 
+  filter(week %in% 1:18)
+
+
 Season24 <- nfl_team_stats_2002_2024 %>% 
   filter(season == 2024)
 
-Season24 <- Season24 %>% 
-  mutate(away_win_margin = score_away - score_home,
-         home_win_margin = score_home - score_away) 
+Season23 <- nfl_team_stats_2002_2024 |> 
+  filter(season == 2023)
 
-Thru_Week_6 <- Season24 %>% 
-  filter(week < 6) %>% 
-  dplyr::select(-season, -week, -date, -time_et)
+Season22 <- nfl_team_stats_2002_2024 |> 
+  filter(season == 2022)
 
-Thru_Week_6
+Season21 <- nfl_team_stats_2002_2024 |> 
+  filter(season == 2021)
 
-Away_Stats <- Thru_Week_6 %>% 
-  group_by(away) %>% 
-  summarise(points_allowed_away = sum(score_home),
-            yards_allowed_away = sum(yards_home),
-            sacks_away = sum(sacks_num_away),
-            turnovers_away = sum(fumbles_away) + sum(interceptions_away),
-            num_away_games = n())
+# Thru_Week_6 <- Season24 %>% 
+#   filter(week < 6) %>% 
+#   dplyr::select(-season, -week, -date, -time_et)
+# 
+# Thru_Week_6
+# 
+# Away_Stats <- Thru_Week_6 %>% 
+#   group_by(away) %>% 
+#   summarise(points_allowed_away = sum(score_home),
+#             yards_allowed_away = sum(yards_home),
+#             sacks_away = sum(sacks_num_away),
+#             turnovers_away = sum(fumbles_away) + sum(interceptions_away),
+#             num_away_games = n())
+# 
+# Home_Stats <- Thru_Week_6 %>% 
+#   group_by(home) %>% 
+#   summarise(points_allowed_home = sum(score_away),
+#             yards_allowed_home = sum(yards_away),
+#             sacks_home = sum(sacks_num_home),
+#             turnovers_home = sum(fumbles_home) + sum(interceptions_home),
+#             num_home_games = n())
+# 
+# 
+# ThruWeek6Totals <- full_join(Away_Stats, Home_Stats, join_by(away == home))
 
-Home_Stats <- Thru_Week_6 %>% 
-  group_by(home) %>% 
-  summarise(points_allowed_home = sum(score_away),
-            yards_allowed_home = sum(yards_away),
-            sacks_home = sum(sacks_num_home),
-            turnovers_home = sum(fumbles_home) + sum(interceptions_home),
-            num_home_games = n())
-
-
-ThruWeek6Totals <- full_join(Away_Stats, Home_Stats, join_by(away == home))
-
-Season24 %>% 
-  dplyr::select(-season, -date, -time_et, -first_downs_away, -first_downs_home, -first_downs_from_passing_away, -first_downs_from_passing_home, -first_downs_from_rushing_away, -first_downs_from_rushing_home, -first_downs_from_penalty_away, -first_downs_from_penalty_home, -third_down_comp_away, -third_down_comp_home, -third_down_att_away, -third_down_att_home, -fourth_down_att_away, -fourth_down_att_home, -fourth_down_comp_away, -fourth_down_comp_home, -plays_away, -plays_home, -drives_away, -drives_home, -pass_comp_away, -pass_comp_home)
+# Season24 %>% 
+#   dplyr::select(-season, -date, -time_et, -first_downs_away, -first_downs_home, -first_downs_from_passing_away, -first_downs_from_passing_home, -first_downs_from_rushing_away, -first_downs_from_rushing_home, -first_downs_from_penalty_away, -first_downs_from_penalty_home, -third_down_comp_away, -third_down_comp_home, -third_down_att_away, -third_down_att_home, -fourth_down_att_away, -fourth_down_att_home, -fourth_down_comp_away, -fourth_down_comp_home, -plays_away, -plays_home, -drives_away, -drives_home, -pass_comp_away, -pass_comp_home)
 
 #View(Season24)
 ```
@@ -104,18 +118,33 @@ T30 = Rams
 T31 = 49ers
 T32 = Seahawks
 
+# Functions 
+
+# Comparing Rankings 
+
 ```{r}
-Least_Squares_data <- Season24 |> 
-  select(week, home, away, home_win_margin, score_away, score_home) |> 
-  mutate(home = ifelse(home == "Bills", "T1", ifelse(home == "Dolphins", "T2", ifelse(home == "Patriots", "T3", ifelse(home == "Jets", "T4", ifelse(home == "Ravens", "T5", ifelse(home == "Bengals", "T6", ifelse(home == "Browns", "T7", ifelse(home == "Steelers", "T8", ifelse(home == "Texans", "T9", ifelse(home == "Texans", "T9", ifelse(home == "Colts", "T10", ifelse(home == "Jaguars", "T11", ifelse(home == "Titans", "T12", ifelse(home == "Broncos", "T13", ifelse(home == "Chiefs", "T14", ifelse(home == "Raiders", "T15", ifelse(home == "Chargers", "T16", ifelse(home == "Cowboys", "T17", ifelse(home == "Giants", "T18", ifelse(home == "Eagles", "T19", ifelse(home == "Commanders", "T20", ifelse(home == "Bears", "T21", ifelse(home == "Lions", "T22", ifelse(home == "Packers", "T23", ifelse(home == "Vikings", "T24", ifelse(home == "Falcons", "T25", ifelse(home == "Panthers", "T26", ifelse(home == "Saints", "T27", ifelse(home == "Buccaneers", "T28", ifelse(home == "Cardinals", "T29", ifelse(home == "Rams", "T30", ifelse(home == "49ers", "T31", "T32"))))))))))))))))))))))))))))))))) |> 
-  mutate(away = ifelse(away == "Bills", "T1", ifelse(away == "Dolphins", "T2", ifelse(away == "Patriots", "T3", ifelse(away == "Jets", "T4", ifelse(away == "Ravens", "T5", ifelse(away == "Bengals", "T6", ifelse(away == "Browns", "T7", ifelse(away == "Steelers", "T8", ifelse(away == "Texans", "T9", ifelse(away == "Texans", "T9", ifelse(away == "Colts", "T10", ifelse(away == "Jaguars", "T11", ifelse(away == "Titans", "T12", ifelse(away == "Broncos", "T13", ifelse(away == "Chiefs", "T14", ifelse(away == "Raiders", "T15", ifelse(away == "Chargers", "T16", ifelse(away == "Cowboys", "T17", ifelse(away == "Giants", "T18", ifelse(away == "Eagles", "T19", ifelse(away == "Commanders", "T20", ifelse(away == "Bears", "T21", ifelse(away == "Lions", "T22", ifelse(away == "Packers", "T23", ifelse(away == "Vikings", "T24", ifelse(away == "Falcons", "T25", ifelse(away == "Panthers", "T26", ifelse(away == "Saints", "T27", ifelse(away == "Buccaneers", "T28", ifelse(away == "Cardinals", "T29", ifelse(away == "Rams", "T30", ifelse(away == "49ers", "T31", "T32")))))))))))))))))))))))))))))))))
+Comparison <- function(ranking1, ranking2){
+  ranking1 <- ranking1 |> 
+  select(Team) |> 
+  rename(Ranking_1 = Team)
 
-Week_9_Least_Squares <-Least_Squares_data |> 
-  mutate(week = as.numeric(week)) |> 
-  filter(week < 10)
+  ranking2 <- ranking2 |> 
+  select(Team) |> 
+  rename(Ranking_2 = Team)
 
-Least_Squares_data <- Least_Squares_data |> 
-  filter(week %in% 1:18)
+  Ranking_comparison <- cbind(ranking1, ranking2)|> 
+    mutate(differs = NA)
+  
+  for (i in 1:nrow(Ranking_comparison)){
+    if (Ranking_comparison[i,1] == Ranking_comparison[i,2]){
+      Ranking_comparison$differs[i] = FALSE
+    }
+    else{
+      Ranking_comparison$differs[i] = TRUE
+    }
+  }
+  return(Ranking_comparison)
+}
 ```
 
 # Massey's Method General: Least Squares
@@ -147,52 +176,6 @@ modify_matrix2 <- function(input_matrix, row) {
   return(input_matrix)
     
 }
-```
-
-
-
-## Least Squares Through Week 9
-
-```{r}
-Solutions_week9 <- as.matrix(Week_9_Least_Squares[, "home_win_margin"])
-
-zeros_week9 <- matrix(0, ncol = 32, nrow = 138)
-
-T_week9 <- modify_matrix(zeros_week9, Week_9_Least_Squares)
-
-NewT_week9 <- t(T_week9)%*%T_week9
-
-NewSolution_week9 <- t(T_week9)%*%Solutions_week9
-
-LinearIndependence_week9 <- modify_matrix2(NewT_week9, 32)
-
-NewSolution_week9[32, 1] <- 0
-
-NFL_Rankings_Week9 <- solve(LinearIndependence_week9) %*% NewSolution_week9
-
-NFL_Rankings_Week9
-```
-
-## Least Squares Ranking Week 18
-
-```{r}
-Solutions_week18 <- as.matrix(Least_Squares_data[, "home_win_margin"])
-
-zeros_week18 <- matrix(0, ncol = 32, nrow = 272)
-
-T_week18 <- modify_matrix(zeros_week18, Least_Squares_data)
-
-NewT_week18 <- t(T_week18)%*%T_week18
-
-NewSolution_week18 <- t(T_week18)%*%Solutions_week18
-
-LinearIndependence_week18 <- modify_matrix2(NewT_week18, 32)
-
-NewSolution_week18[32, 1] <- 0
-
-NFL_Rankings_Week18 <- solve(LinearIndependence_week18) %*% NewSolution_week18
-
-NFL_Rankings_Week18
 ```
 
 # Keener's Method 
@@ -253,6 +236,82 @@ Skewing_Matrix <- function(input_matrix){
 }
 ```
 
+# Season 2024 
+
+```{r}
+Week_9_Least_Squares <-Season24 |> 
+  mutate(week = as.numeric(week)) |> 
+  filter(week < 10)
+```
+
+```{r}
+NFL_End_Of_Season_Ranking <- data.frame(Team = c("Lions", "Chiefs", "Vikings", "Eagles","Bills", "Ravens", "Commanders", "Packers", "Chargers", "Broncos", "Texans", "Rams", "Steelers", "Seahawks", "Buccaneers", "Bengals", "Cardinals", "Falcons", "Colts", "Dolphins", "Cowboys", "49ers", "Panthers", "Bears", "Saints", "Jets", "Jaguars", "Raiders", "Patriots", "Browns", "Giants", "Titans"))
+
+NFL_Playoff_Placing <- data.frame(Team = c("Eagles", "Chiefs", "Bills", "Commanders","Lions","Ravens","Rams", "Texans", "Buccaneers","Vikings","Chargers","Steelers","Packers","Broncos"))
+```
+
+
+## Least Squares Through Week 9
+
+```{r}
+Solutions_week9 <- as.matrix(Week_9_Least_Squares[, "home_win_margin"])
+
+zeros_week9 <- matrix(0, ncol = 32, nrow = 138)
+
+T_week9 <- modify_matrix(zeros_week9, Week_9_Least_Squares)
+
+NewT_week9 <- t(T_week9)%*%T_week9
+
+NewSolution_week9 <- t(T_week9)%*%Solutions_week9
+
+LinearIndependence_week9 <- modify_matrix2(NewT_week9, 32)
+
+NewSolution_week9[32, 1] <- 0
+
+NFL_Rankings_Week9 <- solve(LinearIndependence_week9) %*% NewSolution_week9
+
+Ranking_Least_SquaresWeek9 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
+                         Ranking_Value = NFL_Rankings_Week9[,1]) |> 
+  arrange(-Ranking_Value)
+
+Ranking_Least_SquaresWeek9
+```
+
+## Least Squares Ranking Week 18
+
+```{r}
+Solutions_week18 <- as.matrix(Season24[, "home_win_margin"])
+
+zeros_week18 <- matrix(0, ncol = 32, nrow = 272)
+
+T_week18 <- modify_matrix(zeros_week18, Season24)
+
+NewT_week18 <- t(T_week18)%*%T_week18
+
+NewSolution_week18 <- t(T_week18)%*%Solutions_week18
+
+LinearIndependence_week18 <- modify_matrix2(NewT_week18, 32)
+
+NewSolution_week18[32, 1] <- 0
+
+NFL_Rankings_Week18 <- solve(LinearIndependence_week18) %*% NewSolution_week18
+
+Ranking_Least_SquaresWeek18 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
+                         Ranking_Value = NFL_Rankings_Week18[,1]) |> 
+  arrange(-Ranking_Value)
+
+Ranking_Least_SquaresWeek18
+```
+
+# Comparing Week 9 vs Week 18 Ranking
+
+```{r}
+Comparing_Least_Squares <- Comparison(Ranking_Least_SquaresWeek9, Ranking_Least_SquaresWeek18)
+
+Comparing_Least_Squares |> 
+  count(differs)
+```
+
 # Week 9 Keener's Method Rankings
 
 ```{r}
@@ -276,7 +335,7 @@ team_ranking_week9
 # Week 18 Keener's Method Rankingss
 
 ```{r}
-Week18_For_Keener <- Least_Squares_data |> 
+Week18_For_Keener <- Season24 |> 
   mutate(home = as.numeric(sub("T","", home)),
          away = as.numeric(sub("T","", away)))
 
@@ -293,3 +352,153 @@ team_ranking_week18 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jet
 team_ranking_week18 
 ```
 
+# Comparing Like Models Week to Week
+
+## Comparing Week 9 to Week 18 Keener's
+
+```{r}
+Comparing_Keeners <- Comparison(team_ranking_week9, team_ranking_week18)
+
+Comparing_Keeners |> 
+  count(differs)
+```
+
+## Comparing Week 9 to Week 18 Least Squares
+
+```{r}
+Comparing_Least_Squares <- Comparison(Ranking_Least_SquaresWeek9, Ranking_Least_SquaresWeek18)
+
+Comparing_Least_Squares |> 
+  count(differs)
+```
+
+# Comparing Same Weeks Model to Model
+
+## Comparing Keener's Week 9 and Least Squares Week 9
+```{r}
+Week9_Comparisons <- Comparison(team_ranking_week9, Ranking_Least_SquaresWeek9)
+
+Week_9_Comparisons
+
+Week9_Comparisons |> 
+  count(differs)
+```
+
+## Comparing Keener's Week 18 and Least Sqaures Week 18
+
+```{r}
+Week18_Comparisons <- Comparison(team_ranking_week18, Ranking_Least_SquaresWeek18)
+
+Week18_Comparisons
+
+Week18_Comparisons |> 
+  count(differs)
+```
+
+
+# Comparing Models With NFL Final Results
+
+## Keener's Method vs NFL End of Season Rankings
+
+### Week 9
+
+```{r}
+NFL_Rankings_Keeners_Week9 <- Comparison(NFL_End_Of_Season_Ranking, team_ranking_week9)
+
+NFL_Rankings_Keeners_Week9
+
+NFL_Rankings_Keeners_Week9 |> 
+  count(differs)
+```
+
+### Week 18 
+
+```{r}
+NFL_Rankings_Keeners_Week18 <- Comparison(NFL_End_Of_Season_Ranking, team_ranking_week18)
+
+NFL_Rankings_Keeners_Week18
+
+NFL_Rankings_Keeners_Week18 |> 
+  count(differs)
+```
+
+## Keener's Method vs Playoff Placing 
+
+### Week 9
+
+```{r}
+top_14_ranking_week9 <- team_ranking_week9 |> 
+  slice_head(n = 14)
+
+playoff_placing_week9 <- Comparison(NFL_Playoff_Placing, top_14_ranking_week9)
+
+playoff_placing_week9 |> 
+  count(differs)
+```
+
+### Week 18
+
+```{r}
+top_14_ranking_week18 <- team_ranking_week18 |> 
+  slice_head(n = 14)
+
+top_14_ranking_week18
+
+playoff_placing_week18 <- Comparison(NFL_Playoff_Placing, top_14_ranking_week18)
+
+playoff_placing_week18 |> 
+  count(differs)
+```
+
+
+## Least Squares vs NFL End of Season Rankings 
+
+### Week 9
+
+```{r}
+NFL_Rankings_Least_Squares_Week9 <- Comparison(NFL_End_Of_Season_Ranking, Ranking_Least_SquaresWeek9)
+
+NFL_Rankings_Least_Squares_Week9
+
+NFL_Rankings_Least_Squares_Week9 |> 
+  count(differs)
+```
+
+### Week 18 
+
+```{r}
+NFL_Rankings_Least_Squares_Week18 <- Comparison(NFL_End_Of_Season_Ranking, Ranking_Least_SquaresWeek18)
+
+NFL_Rankings_Least_Squares_Week18
+
+NFL_Rankings_Least_Squares_Week18 |> 
+  count(differs)
+```
+
+## Least Squares vs Playoff Placing 
+
+### Week 9
+
+```{r}
+top_14_ranking_least_squares_week9 <- Ranking_Least_SquaresWeek9 |> 
+  slice_head(n = 14)
+
+playoff_placing_least_squares_week9 <- Comparison(NFL_Playoff_Placing, top_14_ranking_least_squares_week9)
+
+playoff_placing_least_squares_week9 |> 
+  count(differs)
+```
+
+### Week 18
+
+```{r}
+top_14_ranking_least_squares_week18 <- Ranking_Least_SquaresWeek18 |> 
+  slice_head(n = 14)
+
+top_14_ranking_least_squares_week18
+
+playoff_placing_least_squares_week18 <- Comparison(NFL_Playoff_Placing, top_14_ranking_least_squares_week18)
+
+playoff_placing_least_squares_week18 |> 
+  count(differs)
+```
