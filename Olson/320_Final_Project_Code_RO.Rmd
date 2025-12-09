@@ -152,6 +152,28 @@ Comparison <- function(ranking1, ranking2){
 }
 ```
 
+```{r}
+#new function
+move_3_comparison <- function(ranking1, ranking2) {
+  ranking1 <- ranking1 |> #team names and rank nums
+    dplyr::select(Team) |> 
+    dplyr::mutate(Ranking_1 = dplyr::row_number())
+
+  ranking2 <- ranking2 |> 
+    dplyr::select(Team) |> 
+    dplyr::mutate(Ranking_2 = dplyr::row_number())
+  
+  #join rankings by Team
+  Ranking_comparison <- dplyr::left_join(ranking1, ranking2, by = "Team")
+
+  #team has or has not moved more than 3 spots
+  Ranking_comparison <- Ranking_comparison |>
+    dplyr::mutate(moved_3_or_less = abs(Ranking_1 - Ranking_2) <= 3)
+
+  return(Ranking_comparison)
+}
+```
+
 
 # Massey's Method General: Least Squares
 
@@ -507,3 +529,13 @@ playoff_placing_least_squares_week18 <- Comparison(NFL_Playoff_Placing, top_14_r
 playoff_placing_least_squares_week18 |> 
   count(differs)
 ```
+
+```{r}
+week9_comp_3 <- move_3_comparison(team_ranking_week9, Ranking_Least_SquaresWeek9)
+
+Week9_Comparisons |> 
+  count(differs)
+
+table(week9_comp_3$moved_3_or_less)
+```
+
