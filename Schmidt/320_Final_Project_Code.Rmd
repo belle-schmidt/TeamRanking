@@ -133,16 +133,8 @@ Comparison <- function(ranking1, ranking2){
   rename(Ranking_2 = Team)
 
   Ranking_comparison <- cbind(ranking1, ranking2)|> 
-    mutate(differs = NA)
+    mutate(differs = Ranking_1 != Ranking_2)
   
-  for (i in 1:nrow(Ranking_comparison)){
-    if (Ranking_comparison[i,1] == Ranking_comparison[i,2]){
-      Ranking_comparison$differs[i] = FALSE
-    }
-    else{
-      Ranking_comparison$differs[i] = TRUE
-    }
-  }
   return(Ranking_comparison)
 }
 ```
@@ -327,7 +319,7 @@ eigen_Week9 <- eigen(Matrix_Week9)
 
 team_ranking_week9 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
                          Ranking_Value = eigen_Week9$vectors[,1]) |> 
-  arrange(Ranking_Value)
+  arrange(-Ranking_Value)
 
 team_ranking_week9
 ```
@@ -359,6 +351,8 @@ team_ranking_week18
 ```{r}
 Comparing_Keeners <- Comparison(team_ranking_week9, team_ranking_week18)
 
+Comparing_Keeners
+
 Comparing_Keeners |> 
   count(differs)
 ```
@@ -378,7 +372,9 @@ Comparing_Least_Squares |>
 ```{r}
 Week9_Comparisons <- Comparison(team_ranking_week9, Ranking_Least_SquaresWeek9)
 
-Week_9_Comparisons
+Week9_Comparisons
+
+team_ranking_week9
 
 Week9_Comparisons |> 
   count(differs)
