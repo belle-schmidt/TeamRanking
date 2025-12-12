@@ -19,6 +19,7 @@ nfl_team_stats_2002_2024 <- read_csv("nfl_team_stats_2002-2024.csv")
 # nfl_team_stats_2002_2024
 ```
 
+
 ```{r}
 nfl_team_stats_2002_2024 <- nfl_team_stats_2002_2024 %>% 
   mutate(away_win_margin = score_away - score_home,
@@ -127,33 +128,24 @@ T32 = Seahawks
 # Comparing Rankings 
 
 ```{r}
+
+# Exact Comparison
 Comparison <- function(ranking1, ranking2){
   ranking1 <- ranking1 |> 
-  dplyr::select(Team) |> 
+  select(Team) |> 
   rename(Ranking_1 = Team)
 
   ranking2 <- ranking2 |> 
-  dplyr::select(Team) |> 
+  select(Team) |> 
   rename(Ranking_2 = Team)
-  
 
   Ranking_comparison <- cbind(ranking1, ranking2)|> 
-    mutate(differs = NA)
+    mutate(differs = Ranking_1 != Ranking_2)
   
-  for (i in 1:nrow(Ranking_comparison)){
-    if (Ranking_comparison[i,1] == Ranking_comparison[i,2]){
-      Ranking_comparison$differs[i] = FALSE
-    }
-    else{
-      Ranking_comparison$differs[i] = TRUE
-    }
-  }
   return(Ranking_comparison)
 }
-```
 
-```{r}
-#new function
+# Comparison within Three Places
 move_3_comparison <- function(ranking1, ranking2) {
   ranking1 <- ranking1 |> #team names and rank nums
     dplyr::select(Team) |> 
@@ -174,7 +166,6 @@ move_3_comparison <- function(ranking1, ranking2) {
 }
 ```
 
-
 # Massey's Method General: Least Squares
 
 ```{r}
@@ -187,6 +178,7 @@ modify_matrix <- function(input_matrix, data) {
     col2 <- data$away[i]
     col_index2 <- as.numeric(sub("T","", data$away[i]))
     input_matrix[i, col_index2] <- -1
+    
   
   }
   
@@ -330,15 +322,6 @@ Ranking_Least_SquaresWeek18 <- data.frame(Team = c("Bills", "Dolphins", "Patriot
 Ranking_Least_SquaresWeek18
 ```
 
-# Comparing Week 9 vs Week 18 Ranking
-
-```{r}
-Comparing_Least_Squares <- Comparison(Ranking_Least_SquaresWeek9, Ranking_Least_SquaresWeek18)
-
-Comparing_Least_Squares |> 
-  count(differs)
-```
-
 # Week 9 Keener's Method Rankings
 
 ```{r}
@@ -354,7 +337,7 @@ eigen_Week9 <- eigen(Matrix_Week9)
 
 team_ranking_week9 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
                          Ranking_Value = eigen_Week9$vectors[,1]) |> 
-  arrange(Ranking_Value)
+  arrange(-Ranking_Value)
 
 team_ranking_week9
 ```
@@ -386,8 +369,18 @@ team_ranking_week18
 ```{r}
 Comparing_Keeners <- Comparison(team_ranking_week9, team_ranking_week18)
 
+Comparing_Keeners
+
 Comparing_Keeners |> 
   count(differs)
+
+
+Comparing_Keeners_3 <- move_3_comparison(team_ranking_week9, team_ranking_week18)
+
+Comparing_Keeners_3
+
+Comparing_Keeners_3 |> 
+  count(moved_3_or_less)
 ```
 
 ## Comparing Week 9 to Week 18 Least Squares
@@ -397,6 +390,13 @@ Comparing_Least_Squares <- Comparison(Ranking_Least_SquaresWeek9, Ranking_Least_
 
 Comparing_Least_Squares |> 
   count(differs)
+
+Comparing_Least_Squares_3 <- move_3_comparison(Ranking_Least_SquaresWeek9, Ranking_Least_SquaresWeek18)
+
+Comparing_Least_Squares_3
+
+Comparing_Least_Squares_3 |> 
+  count(moved_3_or_less)
 ```
 
 # Comparing Same Weeks Model to Model
@@ -409,6 +409,13 @@ Week9_Comparisons
 
 Week9_Comparisons |> 
   count(differs)
+
+Week9_Comparisons_3 <- move_3_comparison(team_ranking_week9, Ranking_Least_SquaresWeek9)
+
+Week9_Comparisons_3
+
+Week9_Comparisons_3 |> 
+  count(moved_3_or_less)
 ```
 
 ## Comparing Keener's Week 18 and Least Sqaures Week 18
@@ -420,6 +427,13 @@ Week18_Comparisons
 
 Week18_Comparisons |> 
   count(differs)
+
+Week18_Comparisons_3 <- move_3_comparison(team_ranking_week18, Ranking_Least_SquaresWeek18)
+
+Week18_Comparisons_3
+
+Week18_Comparisons_3 |> 
+  count(moved_3_or_less)
 ```
 
 
@@ -436,6 +450,13 @@ NFL_Rankings_Keeners_Week9
 
 NFL_Rankings_Keeners_Week9 |> 
   count(differs)
+
+NFL_Rankings_Keeners_Week9_3 <- move_3_comparison(NFL_End_Of_Season_Ranking, team_ranking_week9)
+
+NFL_Rankings_Keeners_Week9_3
+
+NFL_Rankings_Keeners_Week9_3 |> 
+  count(moved_3_or_less)
 ```
 
 ### Week 18 
@@ -447,6 +468,13 @@ NFL_Rankings_Keeners_Week18
 
 NFL_Rankings_Keeners_Week18 |> 
   count(differs)
+
+NFL_Rankings_Keeners_Week18_3 <- move_3_comparison(NFL_End_Of_Season_Ranking, team_ranking_week18)
+
+NFL_Rankings_Keeners_Week18_3
+
+NFL_Rankings_Keeners_Week18_3 |> 
+  count(moved_3_or_less)
 ```
 
 ## Keener's Method vs Playoff Placing 
@@ -461,6 +489,13 @@ playoff_placing_week9 <- Comparison(NFL_Playoff_Placing, top_14_ranking_week9)
 
 playoff_placing_week9 |> 
   count(differs)
+
+playoff_placing_week9_3 <- move_3_comparison(NFL_Playoff_Placing, top_14_ranking_week9)
+
+playoff_placing_week9_3 |> 
+  count(moved_3_or_less)
+
+playoff_placing_week9_3
 ```
 
 ### Week 18
@@ -475,6 +510,11 @@ playoff_placing_week18 <- Comparison(NFL_Playoff_Placing, top_14_ranking_week18)
 
 playoff_placing_week18 |> 
   count(differs)
+
+playoff_placing_week18_3 <- move_3_comparison(NFL_Playoff_Placing, top_14_ranking_week18)
+
+playoff_placing_week18_3 |> 
+  count(moved_3_or_less)
 ```
 
 
@@ -489,6 +529,13 @@ NFL_Rankings_Least_Squares_Week9
 
 NFL_Rankings_Least_Squares_Week9 |> 
   count(differs)
+
+NFL_Rankings_Least_Squares_Week9_3 <- move_3_comparison(NFL_End_Of_Season_Ranking, Ranking_Least_SquaresWeek9)
+
+NFL_Rankings_Least_Squares_Week9_3
+
+NFL_Rankings_Least_Squares_Week9_3 |> 
+  count(moved_3_or_less)
 ```
 
 ### Week 18 
@@ -500,6 +547,13 @@ NFL_Rankings_Least_Squares_Week18
 
 NFL_Rankings_Least_Squares_Week18 |> 
   count(differs)
+
+NFL_Rankings_Least_Squares_Week18_3 <- move_3_comparison(NFL_End_Of_Season_Ranking, Ranking_Least_SquaresWeek18)
+
+NFL_Rankings_Least_Squares_Week18_3
+
+NFL_Rankings_Least_Squares_Week18_3 |> 
+  count(moved_3_or_less)
 ```
 
 ## Least Squares vs Playoff Placing 
@@ -514,6 +568,11 @@ playoff_placing_least_squares_week9 <- Comparison(NFL_Playoff_Placing, top_14_ra
 
 playoff_placing_least_squares_week9 |> 
   count(differs)
+
+playoff_placing_least_squares_week9_3 <- move_3_comparison(NFL_Playoff_Placing, top_14_ranking_least_squares_week9)
+
+playoff_placing_least_squares_week9_3 |> 
+  count(moved_3_or_less)
 ```
 
 ### Week 18
@@ -528,14 +587,9 @@ playoff_placing_least_squares_week18 <- Comparison(NFL_Playoff_Placing, top_14_r
 
 playoff_placing_least_squares_week18 |> 
   count(differs)
+
+playoff_placing_least_squares_week18_3 <- move_3_comparison(NFL_Playoff_Placing, top_14_ranking_least_squares_week18)
+
+playoff_placing_least_squares_week18_3 |> 
+  count(moved_3_or_less)
 ```
-
-```{r}
-week9_comp_3 <- move_3_comparison(team_ranking_week9, Ranking_Least_SquaresWeek9)
-
-Week9_Comparisons |> 
-  count(differs)
-
-table(week9_comp_3$moved_3_or_less)
-```
-
