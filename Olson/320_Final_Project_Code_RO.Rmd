@@ -3,6 +3,8 @@ title: "320 Final Project"
 author: "Belle Schmidt and Rachael Olson"
 date: "2025-11-12"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -593,3 +595,109 @@ playoff_placing_least_squares_week18_3 <- move_3_comparison(NFL_Playoff_Placing,
 playoff_placing_least_squares_week18_3 |> 
   count(moved_3_or_less)
 ```
+
+
+```{r}
+#Graphs
+library(ggplot2)
+week18_compare <- move_3_comparison(team_ranking_week18, Ranking_Least_SquaresWeek18)
+
+ggplot(week18_compare, aes(x = Ranking_1, y = Ranking_2, label = Team)) +
+  geom_point() +
+  geom_text(nudge_y = 0.5, size = 3) +
+  geom_abline(color = "navy") +
+  labs(title = "Week 18: Keener's Method Compared to Least Squares Massey's Method",
+       x = "Keener Rankings",
+       y = "Least Squares Rankings") +
+  theme_minimal()
+
+keen_wk18_err <- move_3_comparison(NFL_End_Of_Season_Ranking, team_ranking_week18) |>
+  mutate(error = Ranking_2 - Ranking_1)
+
+ggplot(keen_wk18_err, aes(x = reorder(Team, error), y = error)) +
+  geom_col(fill = "navy") +
+  coord_flip() + 
+  labs(title = "Keener's Error Calculated by NFL Rankings at Week 18",
+       x = "NFL Teams",
+       y = "Ranking Error (positive = overated, negative = underrated)") +
+  theme_minimal()
+
+ls_wk18_err <- move_3_comparison(NFL_End_Of_Season_Ranking, Ranking_Least_SquaresWeek18) |>
+  mutate(error = Ranking_2 - Ranking_1)
+
+ggplot(ls_wk18_err, aes(x = reorder(Team, error), y = error)) +
+  geom_col(fill = "navy") +
+  coord_flip() + 
+  labs(title = "Least Square's Error Calculated by NFL Rankings at Week 18",
+       x = "NFL Teams",
+       y = "Ranking Error (positive = overated, negative = underrated)") +
+  theme_minimal()
+
+
+
+keen18_playoff <- team_ranking_week18 |>
+  filter(Team %in% NFL_Playoff_Placing$Team) |>
+  mutate(model_rank = row_number())
+nfl_playoffs <-NFL_Playoff_Placing |>
+  mutate(playoff_rank = row_number())
+compare_keen18_play <- nfl_playoffs |>
+  left_join(keen18_playoff |> select(Team, model_rank), by = "Team") |>
+  mutate(err  = playoff_rank - model_rank ) |>
+  mutate(overrated = ifelse(err < 0, "Underrated", "Overrated"))
+
+  
+ggplot(compare_keen18_play, aes(x = reorder(Team, err), y = err, fill = overrated)) +
+  geom_col() + 
+  coord_flip() +
+  scale_fill_manual(values = c("Overrated" = "darkgreen", "Underrated" = "darkred")) +
+  labs(title = "Keener Week 18: Playoff Ranking Error",
+       x = "NFL Team",
+       y = "Error Between Keener's Rank by the Playoff Result",
+       fill = "Overrated?")+
+  theme_minimal()
+
+
+
+ls18_playoff <- Ranking_Least_SquaresWeek18 |>
+  filter(Team %in% NFL_Playoff_Placing$Team) |>
+  mutate(model_rank = row_number())
+compare_ls18_play <- nfl_playoffs |>
+  left_join(ls18_playoff |> select(Team, model_rank), by = "Team") |>
+  mutate(err  = playoff_rank - model_rank )|>
+  mutate(overrated = ifelse(err < 0, "Underrated", "Overrated"))
+  
+ggplot(compare_ls18_play, aes(x = reorder(Team, err), y = err, fill = overrated)) +
+  geom_col() + 
+  coord_flip() +
+  scale_fill_manual(values = c("Overrated" = "darkgreen", "Underrated" = "darkred")) +
+  labs(title = "Least Squares' Week 18: Playoff Ranking Error",
+       x = "NFL Team",
+       y = "Error Between Least Squares's Rank by the Playoff Result",
+       fill = "Overrated?")+
+  theme_minimal()
+
+nfles_playoff <- NFL_End_Of_Season_Ranking |>
+  filter(Team %in% NFL_Playoff_Placing$Team) |>
+  mutate(model_rank = row_number())
+compare_nfles18_play <- nfl_playoffs |>
+  left_join(nfles_playoff |> select(Team, model_rank), by = "Team") |>
+  mutate(err  = playoff_rank - model_rank) |>
+  mutate(overrated = ifelse(err < 0, "Underrated", "Overrated"))
+  
+ggplot(compare_nfles18_play, aes(x = reorder(Team, err), y = err, fill = overrated)) +
+  geom_col() + 
+  coord_flip() +
+  scale_fill_manual(values = c("Overrated" = "darkgreen", "Underrated" = "darkred")) +
+  labs(title = "NFL End of Season Rankings: Playoff Ranking Error",
+       x = "NFL Team",
+       y = "Error Between NFL End of Season's Rank by the Playoff Result",
+       fill = "Overrated?")+
+  theme_minimal()
+```
+
+```{r}
+sum(abs(compare_ls18_play$err))
+sum(abs(compare_keen18_play$err))
+sum(abs(compare_nfles18_play$err))
+```
+
