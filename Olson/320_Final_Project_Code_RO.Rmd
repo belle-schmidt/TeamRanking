@@ -13,8 +13,7 @@ library(dplyr)
 library(pracma)
 library(readr)
 
-nfl_team_stats_2002_2024 <- read_csv("nfl_team_stats_2002-2024.csv")
-
+nfl_team_stats_2002_2024 <- read_csv("Olson/nfl_team_stats_2002-2024.csv")
 
 #View(nfl_team_stats_2002_2024)
 
@@ -596,6 +595,170 @@ playoff_placing_least_squares_week18_3 |>
   count(moved_3_or_less)
 ```
 
+# 2023 NFL Rankings 
+
+>> Chiefs won. 49ers 2nd. Ravens and Lions lost in conference championships. All three rankings had ravens winning the super bowl. Both least squares and keeners had 49ers as runner ups but NFL had the 49ers in 4th. Keeners had the chiefs 5, NFL had them as 7th, and least sqaures had them as 6th. Lions were ranked 6th by keeners, 3rd by the NFL and 7th by least squares. 
+
+```{r}
+NFL_End_Of_Season_Ranking_2023 <- data.frame(Team = c("Ravens", "Cowboys", "Lions", "49ers", "Bills", "Browns", "Chiefs", "Dolphins", "Eagles", "Texans", "Rams", "Steelers", "Bengals", "Packers", "Colts", "Jaguars", "Saints", "Seahawks", "Buccaneers", "Broncos", "Raiders", "Falcons", "Bears", "Vikings", "Jets", "Giants", "Titans", "Chargers", "Cardinals", "Patriots", "Commanders", "Panthers"))
+```
+
+# Week 18 Keener's Method Rankings 2023
+
+```{r}
+Week18_For_Keener_23 <- Season23 |> 
+  mutate(home = as.numeric(sub("T","", home)),
+         away = as.numeric(sub("T","", away)))
+
+Initial_Matrix_Week18_23 <- A_matrix(Week18_For_Keener_23) 
+
+Matrix_Week18_23 <- Skewing_Matrix(Initial_Matrix_Week18_23)
+
+eigen_Week18_23 <- eigen(Matrix_Week18_23)
+
+team_ranking_week18_23 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
+                         Ranking_Value = eigen_Week18_23$vectors[,1]) |> 
+  arrange(Ranking_Value)
+
+team_ranking_week18_23 
+```
+
+## Least Squares Ranking Week 18 2023
+
+```{r}
+Solutions_week18_23 <- as.matrix(Season23[, "home_win_margin"])
+
+zeros_week18_23 <- matrix(0, ncol = 32, nrow = 272)
+
+T_week18_23 <- modify_matrix(zeros_week18_23, Season23)
+
+NewT_week18_23 <- t(T_week18_23)%*%T_week18_23
+
+NewSolution_week18_23 <- t(T_week18_23)%*%Solutions_week18_23
+
+LinearIndependence_week18_23 <- modify_matrix2(NewT_week18_23, 32)
+
+NewSolution_week18_23[32, 1] <- 0
+
+NFL_Rankings_Week18_23 <- solve(LinearIndependence_week18_23) %*% NewSolution_week18_23
+
+Ranking_Least_SquaresWeek18_23 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
+                         Ranking_Value = NFL_Rankings_Week18_23[,1]) |> 
+  arrange(-Ranking_Value)
+
+Ranking_Least_SquaresWeek18_23
+```
+
+# NFL 2022 Rankings
+
+>> Chiefs won the super bowl. Eagles finished 2nd. Bengals and 49ers lost in conference championships. The NFL had the Chiefs winning the super bowl when the keeners ranked them 4 and least squares had them ranked 6th. The eagles were ranked number 2 by the NFL and keeners while least squares had them at 4. The bengals were ranked 6th by the NFL, 5th by the keeners method and least squares. The 49ers were ranked 3rd by keeners, 5th by the NFL, and 2nd by least squares. 
+
+```{r}
+NFL_End_Of_Season_Ranking_2022 <- data.frame(Team = c("Chiefs", "Eagles", "Bills", "Vikings", "49ers", "Bengals", "Cowboys", "Ravens", "Chargers", "Giants", "Lions", "Jaguars", "Dolphins", "Steelers", "Seahawks", "Commanders","Packers", "Patriots", "Buccaneers", "Falcons", "Panthers", "Browns", "Saints", "Jets", "Titans", "Raiders", "Broncos", "Rams", "Colts", "Cardinals", "Texans", "Bears"))
+```
+
+# Week 18 Keener's Method Rankings 2022
+
+```{r}
+Week18_For_Keener_22 <- Season22 |> 
+  mutate(home = as.numeric(sub("T","", home)),
+         away = as.numeric(sub("T","", away)))
+
+Initial_Matrix_Week18_22 <- A_matrix(Week18_For_Keener_22) 
+
+Matrix_Week18_22 <- Skewing_Matrix(Initial_Matrix_Week18_22)
+
+eigen_Week18_22 <- eigen(Matrix_Week18_22)
+
+team_ranking_week18_22 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
+                         Ranking_Value = eigen_Week18_22$vectors[,1]) |> 
+  arrange(-Ranking_Value)
+
+team_ranking_week18_22 
+```
+
+## Least Squares Ranking Week 18 2022
+
+```{r}
+Solutions_week18_22 <- as.matrix(Season22[, "home_win_margin"])
+
+zeros_week18_22 <- matrix(0, ncol = 32, nrow = 271)
+
+T_week18_22 <- modify_matrix(zeros_week18_22, Season22)
+
+NewT_week18_22 <- t(T_week18_22)%*%T_week18_22
+
+NewSolution_week18_22 <- t(T_week18_22)%*%Solutions_week18_22
+
+LinearIndependence_week18_22 <- modify_matrix2(NewT_week18_22, 32)
+
+NewSolution_week18_22[32, 1] <- 0
+
+NFL_Rankings_Week18_22 <- solve(LinearIndependence_week18_22) %*% NewSolution_week18_22
+
+Ranking_Least_SquaresWeek18_22 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
+                         Ranking_Value = NFL_Rankings_Week18_22[,1]) |> 
+  arrange(-Ranking_Value)
+
+Ranking_Least_SquaresWeek18_22
+```
+
+# NFL Rankings 2021
+
+```{r}
+NFL_End_Of_Season_Ranking_2021 <- data.frame(Team = c("Packers", "Buccaneers", "Cowboys", "Chiefs", "Rams", "Titans", "Cardinals", "Bills", "Bengals", "Raiders", "Patriots", "49ers", "Steelers", "Colts", "Chargers", "Dolphins","Saints", "Eagles", "Ravens", "Browns", "Vikings", "Falcons", "Broncos", "Seahawks", "Commanders", "Bears", "Panthers", "Texans", "Giants", "Jets", "Lions", "Jaguars"))
+```
+
+
+>> Rams won the super bowl. Bengals finished 2nd. Chiefs and 49ers lost in conference championships. The NFL and keeners method had the rams as 5th while least squares had them 6th. Bengals were ranked 9th by the NFL, they were ranked 11th by keeners, and 12th by least squares. The chiefs were ranked number 4 by the NFL and keeners. Least squares had them at number 5.     
+
+# Week 18 Keener's Method Rankings 2021
+
+```{r}
+Week18_For_Keener_21 <- Season21 |> 
+  mutate(home = as.numeric(sub("T","", home)),
+         away = as.numeric(sub("T","", away)))
+
+Initial_Matrix_Week18_21 <- A_matrix(Week18_For_Keener_21) 
+
+Matrix_Week18_21 <- Skewing_Matrix(Initial_Matrix_Week18_21)
+
+eigen_Week18_21 <- eigen(Matrix_Week18_21)
+
+team_ranking_week18_21 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
+                         Ranking_Value = eigen_Week18_21$vectors[,1]) |> 
+  arrange(Ranking_Value)
+
+team_ranking_week18_21 
+```
+
+## Least Squares Ranking Week 18 2021
+
+```{r}
+Solutions_week18_21 <- as.matrix(Season21[, "home_win_margin"])
+
+zeros_week18_21 <- matrix(0, ncol = 32, nrow = 272)
+
+T_week18_21 <- modify_matrix(zeros_week18_21, Season21)
+
+NewT_week18_21 <- t(T_week18_21)%*%T_week18_21
+
+NewSolution_week18_21 <- t(T_week18_21)%*%Solutions_week18_21
+
+LinearIndependence_week18_21 <- modify_matrix2(NewT_week18_21, 32)
+
+NewSolution_week18_21[32, 1] <- 0
+
+NFL_Rankings_Week18_21 <- solve(LinearIndependence_week18_21) %*% NewSolution_week18_21
+
+Ranking_Least_SquaresWeek18_21 <- data.frame(Team = c("Bills", "Dolphins", "Patriots", "Jets", "Ravens", "Bengals", "Browns", "Steelers", "Texans", "Colts", "Jaguars", "Titans", "Broncos", "Chiefs", "Raiders", "Chargers", "Cowboys", "Giants", "Eagles", "Commanders", "Bears", "Lions", "Packers", "Vikings", "Falcons", "Panthers", "Saints", "Buccaneers", "Cardinals", "Rams", "49ers", "Seahawks"),
+                         Ranking_Value = NFL_Rankings_Week18_21[,1]) |> 
+  arrange(-Ranking_Value)
+
+Ranking_Least_SquaresWeek18_21
+```
+
+#Plots
 
 ```{r}
 #Graphs
@@ -645,19 +808,6 @@ compare_keen18_play <- nfl_playoffs |>
   mutate(err  = playoff_rank - model_rank ) |>
   mutate(overrated = ifelse(err < 0, "Underrated", "Overrated"))
 
-  
-ggplot(compare_keen18_play, aes(x = reorder(Team, err), y = err, fill = overrated)) +
-  geom_col() + 
-  coord_flip() +
-  scale_fill_manual(values = c("Overrated" = "darkgreen", "Underrated" = "darkred")) +
-  labs(title = "Keener Week 18: Playoff Ranking Error",
-       x = "NFL Team",
-       y = "Error Between Keener's Rank by the Playoff Result",
-       fill = "Overrated?")+
-  theme_minimal()
-
-
-
 ls18_playoff <- Ranking_Least_SquaresWeek18 |>
   filter(Team %in% NFL_Playoff_Placing$Team) |>
   mutate(model_rank = row_number())
@@ -665,16 +815,7 @@ compare_ls18_play <- nfl_playoffs |>
   left_join(ls18_playoff |> select(Team, model_rank), by = "Team") |>
   mutate(err  = playoff_rank - model_rank )|>
   mutate(overrated = ifelse(err < 0, "Underrated", "Overrated"))
-  
-ggplot(compare_ls18_play, aes(x = reorder(Team, err), y = err, fill = overrated)) +
-  geom_col() + 
-  coord_flip() +
-  scale_fill_manual(values = c("Overrated" = "darkgreen", "Underrated" = "darkred")) +
-  labs(title = "Least Squares' Week 18: Playoff Ranking Error",
-       x = "NFL Team",
-       y = "Error Between Least Squares's Rank by the Playoff Result",
-       fill = "Overrated?")+
-  theme_minimal()
+
 
 nfles_playoff <- NFL_End_Of_Season_Ranking |>
   filter(Team %in% NFL_Playoff_Placing$Team) |>
@@ -684,20 +825,125 @@ compare_nfles18_play <- nfl_playoffs |>
   mutate(err  = playoff_rank - model_rank) |>
   mutate(overrated = ifelse(err < 0, "Underrated", "Overrated"))
   
-ggplot(compare_nfles18_play, aes(x = reorder(Team, err), y = err, fill = overrated)) +
-  geom_col() + 
-  coord_flip() +
-  scale_fill_manual(values = c("Overrated" = "darkgreen", "Underrated" = "darkred")) +
-  labs(title = "NFL End of Season Rankings: Playoff Ranking Error",
-       x = "NFL Team",
-       y = "Error Between NFL End of Season's Rank by the Playoff Result",
-       fill = "Overrated?")+
-  theme_minimal()
+plot_playoff_error <- function(model_df, title_text) {
+  model_df |>
+    ggplot(aes(x = reorder(Team, err), y = err, fill = overrated)) +
+    geom_col() +
+    coord_flip() +
+    scale_fill_manual(values = c("Overrated" = "darkred", "Underrated" = "darkgreen")) +
+    labs(title = title_text,
+         x = "NFL Team",
+         y = "Playoff Rank − Model Rank",
+         fill = "Model Bias") +
+    theme_minimal()
+}
+
+plot_playoff_error(compare_keen18_play, "Keener Week 18: Playoff Ranking Error")
+plot_playoff_error(compare_ls18_play, "Least Squares Week 18: Playoff Ranking Error")
+plot_playoff_error(compare_nfles18_play, "NFL End of Season Rankings: Playoff Ranking Error")
 ```
+
+# Errors for 2024 for each method
 
 ```{r}
 sum(abs(compare_ls18_play$err))
 sum(abs(compare_keen18_play$err))
 sum(abs(compare_nfles18_play$err))
+```
+
+# Playoff Results for 2023,2022, 2021
+
+```{r}
+playoff_result_23 <- data.frame(Team = c("Chiefs", "49ers",
+           "Ravens", "Lions",
+           "Bills", "Texans", "Buccaneers", "Packers",
+           "Browns", "Dolphins", "Steelers",
+           "Cowboys", "Eagles", "Rams"))
+
+playoff_result_22 <- data.frame(
+  Team = c("Chiefs", "Eagles",
+           "Bengals", "49ers",
+           "Bills", "Jaguars", "Cowboys", "Giants",
+           "Chargers", "Ravens", "Dolphins",
+           "Vikings", "Seahawks", "Buccaneers"))
+
+playoff_result_21  <- data.frame(Team = c("Rams", "Bengals",
+           "Chiefs", "49ers",
+           "Titans", "Bills", "Packers", "Buccaneers",
+           "Raiders", "Patriots", "Steelers",
+           "Eagles", "Cowboys", "Cardinals"))
+```
+
+
+# Error for 21,22,23
+
+```{r}
+playoff_error_sum <- function(playoffs, model_rank_df) {
+  
+  playoffs |>
+    left_join(model_rank_df |> select(Team, model_rank), by = "Team") |>
+    mutate(err = playoff_rank - model_rank) |>
+    summarise(total_error = sum(abs(err), na.rm = TRUE)) |>
+    pull(total_error)
+}
+
+playoff_23 <- playoff_result_23 |> mutate(playoff_rank = row_number())
+playoff_22 <- playoff_result_22 |> mutate(playoff_rank = row_number())
+playoff_21 <- playoff_result_21 |> mutate(playoff_rank = row_number())
+
+#2023
+keen23 <- team_ranking_week18_23 |>
+  filter(Team %in% playoff_23$Team) |>
+  mutate(model_rank = row_number())
+
+ls23 <- Ranking_Least_SquaresWeek18_23 |>
+  filter(Team %in% playoff_23$Team) |>
+  mutate(model_rank = row_number())
+
+nfl23 <- NFL_End_Of_Season_Ranking_2023 |>
+  filter(Team %in% playoff_23$Team) |>
+  mutate(model_rank = row_number())
+
+keen_err_23 <- playoff_error_sum(playoff_23, keen23)
+ls_err_23   <- playoff_error_sum(playoff_23, ls23)
+nfl_err_23  <- playoff_error_sum(playoff_23, nfl23)
+
+#2022
+keen22 <- team_ranking_week18_22 |>
+  filter(Team %in% playoff_22$Team) |>
+  mutate(model_rank = row_number())
+
+ls22 <- Ranking_Least_SquaresWeek18_22 |>
+  filter(Team %in% playoff_22$Team) |>
+  mutate(model_rank = row_number())
+
+nfl22 <- NFL_End_Of_Season_Ranking_2022 |>
+  filter(Team %in% playoff_22$Team) |>
+  mutate(model_rank = row_number())
+
+keen_err_22 <- playoff_error_sum(playoff_22, keen22)
+ls_err_22   <- playoff_error_sum(playoff_22, ls22)
+nfl_err_22  <- playoff_error_sum(playoff_22, nfl22)
+
+#2021
+keen21 <- team_ranking_week18_21 |>
+  filter(Team %in% playoff_21$Team) |>
+  mutate(model_rank = row_number())
+
+ls21 <- Ranking_Least_SquaresWeek18_21 |>
+  filter(Team %in% playoff_21$Team) |>
+  mutate(model_rank = row_number())
+
+nfl21 <- NFL_End_Of_Season_Ranking_2021 |>
+  filter(Team %in% playoff_21$Team) |>
+  mutate(model_rank = row_number())
+
+keen_err_21 <- playoff_error_sum(playoff_21, keen21)
+ls_err_21   <- playoff_error_sum(playoff_21, ls21)
+nfl_err_21  <- playoff_error_sum(playoff_21, nfl21)
+
+playoff_error_summary <- data.frame(Season = c(2023, 2022, 2021), Keener = c(keen_err_23, keen_err_22, keen_err_21), Least_Squares = c(ls_err_23, ls_err_22, ls_err_21), NFL = c(nfl_err_23, nfl_err_22, nfl_err_21))
+
+playoff_error_summary
 ```
 
