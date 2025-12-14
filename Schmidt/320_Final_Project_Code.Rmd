@@ -269,6 +269,9 @@ NFL_Playoff_Placing <- data.frame(Team = c("Eagles", "Chiefs", "Bills", "Command
 # Week 18 Keener's Method Rankings 2024
 
 ```{r}
+Season24 |> 
+  filter(home %in% c("T1","T2","T3","T4","T5", "T27","T28","T29","T30","T31","T32") & away %in% c("T27","T28","T29","T30","T31","T32", "T1","T2","T3","T4","T5"))
+
 Week18_For_Keener_24 <- Season24 |> 
   mutate(home = as.numeric(sub("T","", home)),
          away = as.numeric(sub("T","", away)))

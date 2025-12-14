@@ -1,75 +1,54 @@
 ---
-title: "Linear Algebra on the Field: A Study of Massey’s and Keener’s Method on Sports Team Rankings"
-output: html_document
+title: 'Linear Algebra on the Field: A Study of Massey’s and Keener’s Method on Sports
+  Team Rankings'
+output:
+  pdf_document: default
+  html_document: default
 ---
 
+**Introduction**
 
-  Team rankings are an integral part of sports analytics. Applications of these rankings can range from evaluation of performance and team strategy to playoff predictions. Through these real-world applications, we have seen a profound impact on not just the teams but their fans as well. Rankings spark conversations, new ideas, and further exploration across the board on how to find the best method. The search for the best method not only improves accuracy and interpretability, but highlights different aspects of using math in a different context. 
-	In this paper, we focus on developing and comparing advanced linear algebra based methods for ranking teams, specifically those who competed in the seasons between 2021 and 2024 NFL. Our primary motivation for this investigation is to learn how to apply mathematical tools to a real world application such as ours within the context of ranking NFL teams. Methods such as Massey and Keener’s use linear algebra to translate game results and points into a ranking system that can remain consistent throughout. 
-	There are two goals we would like to address throughout this paper. First, we aim to present linear algebra based methods, such as Massey’s Method and Keener’s Method, in a coherent way by examining how their mathematical framework shapes rankings. Secondly, we wish to compare how each method handles real NFL data and evaluate their effectiveness in producing reasonable ranking results. Through that comparison, we highlight the strengths and weaknesses of each method within the topic of linear algebra in sports analytics. Overall, our main research question is the following: How can linear algebra based methods be used to construct data-driven, unbiased rankings and how each mathematical model compares within their linear algebra use? 
-	For this analysis, we will use a dataset that was scraped from ESPN’s Team Stats. This dataset contains current and accurate data from the 23 seasons of NFL ranging from years 2002 to 2025. It contains 61 variables as well as each game per week throughout the regular and post-season games. For the scope of this project, we will focus on the most recent season within the dataset which is the 2024 to 2025 season.  This will allow us to assess each method with a consistent context as we move further into our analysis. 
+  Team rankings are an integral part of sports analytics. Applications of these rankings can range from evaluation of performance and team strategy to playoff predictions and sports betting. Through these real-world applications, we have seen a profound impact on not just the teams but their fans as well. Rankings spark conversations, new ideas, and further exploration across the board on how to find the best method. The search for the best method not only improves accuracy and interpretability, but highlights the importance of linear algebra methods in a real world context. 
+  
+	In this paper, we focus on utilizing and comparing advanced linear algebra based methods for ranking teams, specifically teams that competed in the 2021 through 2024 NFL seasons. Our primary motivation for this investigation was to get a better understanding of how the mathematical tools we learned in class can be applied in the real world. Methods such as Massey’s and Keener’s use linear algebra to translate game results and points into a ranking system. 
+	
+	There are two goals we would like to address throughout this paper. First, we aim to present linear algebra based methods, such as Least Squares Massey’s Method and Keener’s Method, in a coherent way by examining how their mathematical framework shapes rankings. Secondly, we wish to compare how each method handles real NFL data and evaluate their effectiveness in producing reasonable ranking results. Through that comparison, we highlight the strengths and weaknesses of each method in regards to team rankings. Overall, our main research question was: How can linear algebra based methods be used to construct data-driven, unbiased rankings and how do the methods compare to one another and to actual playoff outcomes?
+	
+	For this analysis, we used a dataset that was scraped from ESPN’s Team Stats. The dataset provides game by game data for the NFL seasons between 2002 and 2025. Originally it contained 61 variables, however, we only used information about the home and away teams and the home and away teams’ scores. We decided to focus on the 2021 to 2024 seasons in our analysis. This made sense to us because they were the most recent years and we wanted to draw conclusions regarding the consistency of each method over time.
 
+**Massey’s Least Squares Method**
 
-Massey’s Method
+  Massey’s Least method was developed in 1997 by professor Kenneth Massey, who was an undergraduate student at Bluefield College. An example of this method being applied in the real world is the NCAA using it to rank college football teams and then assign them to bowl games at the end of the season. The main concept of this method is that it assumes that the point differential of a single game is linearly related to the difference in rankings between the two teams. Point differential being the difference in the number of points scored by a team compared to the number of points the opposing team scored. This concept is then used to build a system of linear equations which can be approximated to make team rankings. 
 
-Massey’s method was developed in 1997 by professor Kenneth Massey, who was an undergraduate student at Bluefield College. An example of this method being used in the real world is the application of NCAA using the method to guide college football bowl championship series to inform which team plays in which game at the end of the season. The main idea of this method uses point differentials in games to determine rankings as it assumes that the outcome of each game is linearly related to the difference between the ratings of two different teams. 
+  Justin Wyss-Gallifent, a professor at the University of Maryland, wrote the following steps to explain the process of using Massey’s Least Squares Method to rank teams within a league.
 
-Justin Wyss-Gallifent, a professor at the University of Maryland, wrote the following steps that are used to construct team rankings using Massey’s Method.
+1. Construct the system of equations based on games and point differentials.
+    a. For each game we assume that the point differential is equal to the difference in the          rating of the two teams who were involved in the game. If team $i$ plays team $j$ with         the point differential being p, then $r_j - r_i = p$.
 
-Construct the system of equations based on games and point differentials.
-For each game we assume that the point differential is equal to the difference in the rating of the two teams who were involved in the game. If team i plays team j with the point differential being p, then r_j - r_i = p.
-Convert equations into a matrix of Ar = p.
-The matrix A has a row for each game and a column for each team. In each row, the team that won receives a+1, the team that loses receives a -1, while all other entries are 0. The vector p contains the point differentials for all games.
-Form the least squares system A^tAr = A^tp. 
-Due to the fact that teams typically play fewer games than the number of rankings, the system Ar = p is inconsistent. Massey’s method uses least squares such as  A^tAr = A^tp. 
-Replace the last row of A^tA  with all 1s and the last entry of A^Tp with 0. 
-Replacing the last row with all 1s and setting the corresponding entry in the vector to 0 forces the system to have a unique solution and clarifies that the sum of the ratings are equivalent to 0, such that r_1 +r_2 +... r_n= 0.
-Solve. 
-The resulting vector r contains the Massey evaluated ratings for each team providing a consistent ranking based on point differentials across the season.
- 
+2. Convert equations into a matrix of $Ar = p$.
+    a. The matrix $A$ has a row for each game and a column for each team. In each row, the home         team receives a $+1$, the away team receives a $-1$, while all other entries are $0$.          The vector $p$ contains the point differentials for all games.
 
-Application of Massey’s Method
+3. Form the least squares system $A^tAr = A^tp$. 
+    a. Due to the fact that teams typically play fewer games than the number of rankings, the         system $Ar = p$ is inconsistent. Massey’s least squares method uses least squares such         as  $A^tAr = A^tp$. 
+4. Replace the last row of $A^tA$  with all 1s and the last entry of $A^Tp$ with $0$. 
+    a. Replacing the last row with all 1s and setting the corresponding entry in the vector to        $0$ forces the system to have a unique solution and clarifies that the sum of the              ratings are equivalent to $0$, such that $r_1 +r_2 +... r_n= 0$.
 
-To illustrate the steps from Massey’s Method, we will use our NFL data to demonstrate how this method works. 
+5. Solve. 
+    a. The resulting vector $r$ contains the Massey evaluated ratings for each team providing a         consistent ranking based on point differentials across the season.
 
+**Application of Massey’s Least Method**
 
-Connection to Advanced Linear Algebra.
+  To illustrate the steps from Massey’s Least Method, we will use our NFL data to demonstrate how this method works. Specifically we will be using the 2024 NFL season in our example. 
 
+  We started this process by making equations for all games that were played in the regular NFL season. All teams were assigned a variable, for example the Buffalo Bills were represented by  $r_1$, the Miami Dolphins were represented by $r_2$, and so on. For each game, which corresponded to one row in our data, we made the coefficient of the home team +1, the coefficient of the away team -1, and all other teams had a coefficient of zero. The solution of the equation was the point differential in the final score. If the home team won, the point differential was positive. If they lost, it was negative. Below are five sample equations from the 2024 NFL Season. In reality, we had 272 equations for each of the NFL seasons other than 2022, where a game was cancelled due to a  medical emergency on the field. 
 
-While Massey’s Method uses point differentials and least squares to generate rankings, it is not the only linear-algebra based approach used in sports analytics. Some ranking systems focus less on the point differences and more on the relative quality of the opponent. This thought leads to Keener’s Method, an eigenvector-based model that evaluates teams using spectral properties and scoring matrices. 
+                                $-  r_5 +  r_{14} = 7$
+                                $r_{19} - r_{23} = 5$
+                                $- r_{8}  + r_{25} = -8$
+                                $r_1 - r_{29} = 6$
+                                $- r_{12} + r_{21} = 7$
 
-Keener’s Method
-
-Keener’s Method was introduced in the 1993 SIAM Review by James Keener. Keener discovered that methods using only point differentials could be construed based on different scenarios being played out through games. For example, a team might run up the score to appear stronger than they actually are as well as some teams may face tougher opponents than others throughout their season. To address these concerns, Keener developed a method that would focus on the eigenvectors with a matrix that contained the interactions among teams. The main difference with this method is that Keener’s method evaluates who a team beats rather than by how much. This results in rankings that are believed to be more stable and more reliable than that of Massey’s Method. We will evaluate these differences and determine which method out of these two are the most effective. 
-
-Maxwell Jones and Eric Gan wrote an article that depicted the steps of Keener’s Method in a concise way, which will be restated as the following:
-
-
-Define pairwise scoring factors. 
-For each team (i) and team (j), compute the total points that team (i) scored against team j, denoted S_{ij}). 
-Compose a basic performance ratio, 
-To measure how team (i) performs relative to team (j), we would need to create the following: a_{ij} = \frac(S_{ij})(S_{ij} + S_{ji}). This fraction represents the proportion of total points scored in the game that belonged to team (i). However, the fraction is undefined when both scores are zero.
-Apply Laplace’s Rule of Succession.
-To avoid an undefined fraction, adjust by using Laplace such that a_{ij} = \frac(S_{ij} + 1)(S_{ij} + S_{ji} + 2). This ensures that the values are defined and prevents any a_{ij} from being 0 or 1. 
-Apply the nonlinear skewing function. 
-Due to extreme blowouts causing insatiable rating, apply a skewing function such as: h(x) = \frac(1)(2) + \frac(sgn(x - \frac(1)(2))*Sqrt(|2x-1|))(2). This should compress the extreme values to be closer to 0 or 1, which should in turn stabilize the ratings. 
-Build the Keener’s Matrix.
-From the matrix A = [a_{ij}], where each entry is the skewed performance value representing the “strength” of team (i) relative to team (j). 
-Note: In the NFL, each team plays the same number of games. Due to this fact, normalization by the number of games is not required in our case. However, it is typically needed in other cases. 
-Relate strength and rating.
-Let r_i be the rating of team (i) and s_i be the absolute strength. Keener’s method assumes that they are proportional to one another such that s_i = \lambda r_i. Absolute strength is defined as the sum of the strength relative to all other opponent teams, such that A\vector r = \vector s. Resulting in, A \vector r = \lambda \vector r. 
-Solving the eigenvalue. 
-The ratings \vector r is the eigenvector of A corresponding the the largest possible eigenvalue \lambda. This eigenvector is then used to rank the teams. The higher the r_i is, the stronger the team is, according to Keener’s Method. 
-
-
-Application of Keener’s Method
-
-
-
-Connection to Advanced Linear Algebra
-
-
-
+  Next we converted these equations into a matrix $A$ and a vector $p$. Our matrix had 272 rows, one for each equation (a.k.a game), and 32 columns, one for each team. The vector $p$ contained the solutions of each of the equations (a.k.a the point differentials for each game). Below is a sample of what part of our matrix looks like. 
 
 
 
